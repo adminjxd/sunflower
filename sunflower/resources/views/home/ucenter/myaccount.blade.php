@@ -20,6 +20,7 @@
         <li style="position:relative;"> <span> <a href="{{ URL::asset('/ucenter/systeminfo') }}"><i class="dot dot08"></i>系统信息 </a> </span> </li>
         <li><span><a href="{{ URL::asset('/ucenter/accountset') }}"><i class="dot dot09"></i>账户设置</a></span></li>
       </ul>
+   
     </div>
     <div class="personal-main">
       <link rel="stylesheet" type="text/css" href="{{ URL::asset('/css/fileupload.less.css') }}">
@@ -43,14 +44,15 @@
         <div class="pmain-user">
           <div class="user-head"> <span id="clickHeadImage" class="head-img" title="点击更换头像">
             <form  method="post" action="">
+                {{ csrf_field() }}
               <input type="hidden" name="userPhotoUploadForm" value="userPhotoUploadForm">
-              <span id="userPhotoUploadForm:photo"><img id="userPhotoUploadForm:photoImage" src="{{ URL::asset('/images/touxiang.png') }}" alt="" style="width:88px;height:88px;z-index:0;"> <i class="headframe" style="z-index:0;"></i>-
+              <span id="userPhotoUploadForm:photo"><img id="touxiang" src="{{ URL::asset('/images/touxiang.png') }}" alt="" style="width:88px;height:88px;z-index:0;"> <i class="headframe" style="z-index:0;"></i>-
               <div id="userPhotoUploadForm:shangchuan-btn" class="ui-fileupload ui-widget" style="z-index:0;">
                 <div class="ui-fileupload-buttonbar ui-corner-top">
                 <span class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left"  role="button">
                 <span class="ui-button-icon-left ui-icon ui-c ui-icon-plusthick"></span>
                 <span class="ui-button-text ui-c"></span>
-                  <input type="file" id="userPhotoUploadForm:shangchuan-btn_input" name="userPhotoUploadForm:shangchuan-btn_input" style="z-index:0;display:none;">
+                  <input type="file" class="up" id="userPhotoUploadForm:shangchuan-btn_input" name="userPhotoUploadForm:shangchuan-btn_input" style="z-index:0;display:none;">
                   </span>
                   </div>
                 <div class="ui-fileupload-content ui-widget-content ui-corner-bottom">
@@ -160,4 +162,28 @@
     <div class="clear"></div>
   </div>
 </div>
+<script type="text/javascript">
+  $(document).on('change','.up',function(){
+    var pub = '{{asset("")}}';   
+    $('#touxiang').attr('src',pub);
+    var check_pub = $('#touxiang').attr('src');
+    var formData = new FormData();
+    //提交url
+    var url = check_pub + 'ucenter/upload';
+    formData.append("upload", $(".up").get(0).files[0]);
+     $.ajax({
+     url: url,
+     type: "post",
+     processData: false,
+     contentType: false,
+     data: formData,
+     dataType:'json',
+     success: function(data) {
+        var imgpath = 'uploads/' + data.msg;
+          var img = check_pub + imgpath;
+          $('#touxiang').attr('src',img);
+       }
+     });
+  })
+</script>
 @endsection
