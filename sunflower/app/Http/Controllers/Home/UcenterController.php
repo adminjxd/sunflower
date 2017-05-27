@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Http\Controllers\Home;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class UcenterController extends Controller
          * 安全级别（正则匹配，单数字或字母类型密码级别低 两张中级  两种加长度级别高 ）
          * 账户的总金额
          */
-        $userInfo = Userprofile::join('sun_user', 'sun_user.id', '=', 'sun_user_profile.user_id')->where('user_id','=',1)->first()->toArray();
+        $userInfo = Userprofile::join('user', 'user.id', '=', 'user_profile.user_id')->where('user_id','=',1)->first()->toArray();
 		//print_r($userInfo);die;
 		return view('home/ucenter/myaccount',['userInfo' => $userInfo]);
 	}
@@ -41,7 +41,7 @@ class UcenterController extends Controller
                // 第一个参数代表目录, 第二个参数代表我上方自己定义的一个存储媒介
                $path = $file->store('head', 'uploads');
                $imgPath = "uploads/".$path;
-               $users = DB::table('sun_user_profile')->where('user_id',$user_id)->update(['head' =>$imgPath]);
+               $users = DB::table('user_profile')->where('user_id',$user_id)->update(['head' =>$imgPath]);
                return response()->json(array('msg' => $path));
             }   
         }

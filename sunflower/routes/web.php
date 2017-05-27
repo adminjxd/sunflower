@@ -37,6 +37,8 @@ Route::get('invest/info', ['uses'=>'Home\InvestController@info','as'=>'invest/in
 
 //安全保障
 Route::get('safe/help', ['uses'=>'Home\SafeController@help','as'=>'safe/help']);
+//上传头像
+Route::post('ucenter/upload', ['uses'=>'Home\UcenterController@upload','as'=>'ucenter/upload']);
 //我的账户
 Route::get('ucenter/myaccount', ['uses'=>'Home\UcenterController@myaccount','as'=>'ucenter/myaccount']);
 //资金记录

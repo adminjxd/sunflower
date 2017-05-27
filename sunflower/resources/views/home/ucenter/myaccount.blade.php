@@ -1,4 +1,4 @@
-﻿<!--layouts 引入头部底部-->
+<!--layouts 引入头部底部-->
 @extends('home.layouts.layout')
 @section('content')
 
