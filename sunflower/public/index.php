@@ -18,8 +18,9 @@
 | loading any of our classes later on. It feels great to relax.
 |
 */
-
+defined('__PATH__') or define('__PATH__','http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
 require __DIR__.'/../bootstrap/autoload.php';
+
 
 /*
 |--------------------------------------------------------------------------
