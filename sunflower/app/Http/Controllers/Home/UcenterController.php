@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Home;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 use App\Http\Controllers\Controller;
 
 
@@ -15,29 +14,6 @@ class UcenterController extends Controller
 	{
 		return view('home/ucenter/myaccount');
 	}
-	
-	/**
-	* @上传头像
-	*/
-	public function upload(Request $request)
-    {
-        //根据用户的id修改头像
-        $user_id = 1;
-        if ($request->ajax()) {
-            $file = $request->file('upload');
-            if(!empty($file))
-            {
-               // 第一个参数代表目录, 第二个参数代表我上方自己定义的一个存储媒介
-               $path = $file->store('head', 'uploads');
-               $imgPath = "uploads/".$path;
-               $users = DB::table('sun_user_profile')->where('user_id',$user_id)->update(['head' =>$imgPath]);
-               return response()->json(array('msg' => $path));
-            }   
-        }
-    }
-
-
-
 	/**
 	 * @action: Money record 资金记录
 	 */
