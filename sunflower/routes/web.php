@@ -19,12 +19,26 @@ Route::get('/', ['uses'=>'Home\IndexController@index','as'=>'index/index']);
 Route::get('register/reg', ['uses'=>'Home\RegisterController@reg','as'=>'register/reg']);
 //登录
 Route::get('login/login', ['uses'=>'Home\LoginController@login','as'=>'login/login']);
+
 //我要投资
-Route::get('invest/list', ['uses'=>'Home\InvestController@list','as'=>'invest/list']);
-//投资详情
+//Route::get('invest', 'Home\InvestController');
+Route::get('invest', ['uses'=>'Home\InvestController@index','as'=>'invest']);
+
+    //投资-Sun 存宝 支付宝回调
+Route::get('invest/returns', 'Home\InvestController@returns');
+Route::get('invest/notify', 'Home\InvestController@notify');
+    //投资、投资详情页 展示
+Route::any('invest/{action}', function($action='invest'){
+    return view("home.invest.$action");
+});
+
+//Route::get('invest/list', ['uses'=>'Home\InvestController@list','as'=>'invest/list']);
 Route::get('invest/info', ['uses'=>'Home\InvestController@info','as'=>'invest/info']);
+
 //安全保障
 Route::get('safe/help', ['uses'=>'Home\SafeController@help','as'=>'safe/help']);
+//上传头像
+Route::post('ucenter/upload', ['uses'=>'Home\UcenterController@upload','as'=>'ucenter/upload']);
 //我的账户
 Route::get('ucenter/myaccount', ['uses'=>'Home\UcenterController@myaccount','as'=>'ucenter/myaccount']);
 //资金记录

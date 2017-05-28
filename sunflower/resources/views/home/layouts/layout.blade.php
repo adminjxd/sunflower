@@ -117,7 +117,7 @@ $(document).ready(function() {
             </dl>
             <dl>
                 <dt>相关业务</dt>
-                <dd><a href="{{ URL::route('invest/list') }}">我要投资</a><a href="#">我要借款</a></dd>
+                <dd><a href="{{ URL::route('invest') }}">我要投资</a><a href="#">我要借款</a></dd>
             </dl>
             <dl>
                 <dt>帮助中心</dt>
