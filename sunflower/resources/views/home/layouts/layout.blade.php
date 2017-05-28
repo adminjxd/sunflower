@@ -94,7 +94,7 @@ $(document).ready(function() {
       <div class="fn-left logo"> <a class="" href="{{ URL::route('index/index') }}"> <img src="{{ URL::asset('/images/logo.png') }}"  title=""> </a> </div>
       <ul class="top-nav fn-clear">
         <li class="on"> <a href="{{ URL::route('index/index') }}">首页</a> </li>
-        <li> <a href="{{ URL::route('invest/list') }}" class="">我要投资</a> </li>
+        <li> <a href="{{ URL::route('invest') }}" class="">我要投资</a> </li>
         <li> <a href="{{ URL::route('loan/index') }}" class="">我要借贷</a> </li>
         <li> <a href="{{ URL::route('crowdfunding/cflist') }}" class="">参与众筹</a> </li>
         <li> <a href="{{ URL::route('safe/help') }}">安全保障</a> </li>
