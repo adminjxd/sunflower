@@ -5,6 +5,9 @@
 <title>p2p网贷平台</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
+<meta name="Keywords" content="" />
+  <link rel="stylesheet" href="{{ URL::asset('loan/css/base.css')}}?v=58abdfe48000c" /> 
+  <link rel="stylesheet" href="{{URL::asset('loan/css/index.css')}}?v=58abdfe48000c" /> 
 <link href="{{ URL::asset('/css/common.css') }}" rel="stylesheet" />
 <link href="{{ URL::asset('/css/index.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('/css/about.css') }}" rel="stylesheet" type="text/css">
@@ -92,7 +95,7 @@ $(document).ready(function() {
       <ul class="top-nav fn-clear">
         <li class="on"> <a href="{{ URL::route('index/index') }}">首页</a> </li>
         <li> <a href="{{ URL::route('invest') }}" class="">我要投资</a> </li>
-        <li> <a href="#" class="">我要借贷</a> </li>
+        <li> <a href="{{ URL::route('loan/index') }}" class="">我要借贷</a> </li>
         <li> <a href="{{ URL::route('crowdfunding/cflist') }}" class="">参与众筹</a> </li>
         <li> <a href="{{ URL::route('safe/help') }}">安全保障</a> </li>
         <li class="top-nav-safe"> <a href="{{ url('ucenter/myaccount') }}">我的账户</a> </li>

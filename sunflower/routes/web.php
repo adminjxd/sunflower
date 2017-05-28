@@ -89,6 +89,16 @@ Route::get('aboutus/recruitment', ['uses'=>'Home\AboutUsController@recruitment',
 Route::get('crowdfunding/cflist', ['uses'=>'Home\CrowdfundingController@cflist','as'=>'crowdfunding/cflist']);
 
 
+//借贷首页
+Route::get('loan/index', ['uses'=>'Home\LoanController@index','as'=>'loan/index']);
+//借贷信息处理
+Route::post('loan/wapRegister', ['uses'=>'Home\LoanController@wapRegister','as'=>'loan/wapRegister']);
+//借贷发送短信验证
+Route::post('loan/wapSendMsg', ['uses'=>'Home\LoanController@wapSendMsg','as'=>'loan/wapSendMsg']);
+Route::post('loan/wapReSendMsg', ['uses'=>'Home\LoanController@wapReSendMsg','as'=>'loan/wapReSendMsg']);
+Route::get('loan/test', ['uses'=>'Home\LoanController@test','as'=>'loan/test']);
+
+
 
 //后台
 Route::get('aindex/index', 'Admin\IndexController@index');
