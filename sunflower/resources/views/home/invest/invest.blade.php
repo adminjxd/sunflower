@@ -92,7 +92,7 @@
                                 <?php }else{?>
                                     <div id="zf" style="display: none">
                                         <a href="javascript:void(0);" class="ui-btn btn-orange zh" loan_id="<?=$v->loan_id?>" >账户余额</a>
-                                        <a href="#" class="ui-btn btn-orange">支付宝</a>
+                                        <a href="{{asset('invest/zfb')}}?project=invest/<?=$v->loan_id?>" class="ui-btn btn-orange">支付宝</a>
                                     </div>
                                     <a class="ui-btn btn-orange zf"  href="javascript:void(0);">立即投资</a>
                                     <?php }?>
@@ -102,10 +102,12 @@
 
                     <script>
                         $(function () {
+                            //支付
                             $('.zf').click(function () {
                                $('#zf').show();
                                 $(this).hidden();
                             });
+                            //账户余额支付
                             $('.zh').click(function () {
                                 var obj=$(this);
                                 var p=prompt('投资金额：');
@@ -122,10 +124,14 @@
                                             loan_id:loan_id,
                                             _token:'{{ csrf_token() }}'
                                         },
-                                        success: function (msg) {
+                                        success: function (num) {
                                             $('#zf').hide();
                                             $('.zf').show();
-                                            alert(msg);
+                                            if(num==1){
+                                                alert('恭喜您投资成功，请查看投资记录')
+                                            }else{
+                                                alert('哎呀~投资失败了，重新试试吧')
+                                            }
                                         }
                                     })
                                 }
