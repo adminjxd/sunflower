@@ -26,13 +26,83 @@
                     <h5>利率列表</h5>
                     </div>
                     <div class="ibox-content">
-                        <button type="button" class="btn btn-info btn-sm">自定义</button>
+                        <button type="button" class="btn btn-info btn-sm">借贷期限利率</button>
                         <br><br>
-                        <table class="table table-bordered">
+                        <table class="table table-bordered" data-table='date'>
                         	<tr>
-                        		<td>123</td>
-                        		<td>456</td>
+                        		<th>最短日期(月)</th>
+                        		<th>最长日期(月)</th>
+                                <th>月利率</th>
+                        		<th>滞纳金利率(日利率)</th>
                         	</tr>
+                            @foreach($date as $key=>$val)
+                            <tr data-id="{{$val['date_id']}}">
+                                <td data-field='min' class='update_field'>{{$val['min']}}</td>
+                                <td data-field='min' class='update_field'>{{$val['max']}}</td>
+                                <td data-field='rate' class='update_field'>{{$val['rate']}}</td>
+                                <td data-field='over_rate' class='update_field'>{{$val['over_rate']}}</td>
+                            </tr>
+                            @endforeach
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="ibox-content">
+                        <button type="button" class="btn btn-info btn-sm">借贷金额利率</button>
+                        <br><br>
+                        <table class="table table-bordered" data-table='amount'>
+                        	<tr>
+                        		<th>最小金额(元)</th>
+                        		<th>最大金额(元)</th>
+                                <th>月利率</th>
+                        		<th>滞纳金利率(日利率)</th>
+                        	</tr>
+                            @foreach($amount as $key=>$val)
+                            <tr data-id="{{$val['amount_id']}}">
+                                <td data-field='min' class='update_field'>{{$val['min']}}</td>
+                                <td data-field='min' class='update_field'>{{$val['max']}}</td>
+                                <td data-field='rate' class='update_field'>{{$val['rate']}}</td>
+                                <td data-field='over_rate' class='update_field'>{{$val['over_rate']}}</td>
+                            </tr>
+                            @endforeach
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="ibox-content">
+                        <button type="button" class="btn btn-info btn-sm">还款方式利率</button>
+                        <br><br>
+                        <table class="table table-bordered" data-table='amount'>
+                        	<tr>
+                        		<th>方式名称</th>
+                                <th>月利率</th>
+                        		<th>滞纳金利率(日利率)</th>
+                        	</tr>
+                            @foreach($method as $key=>$val)
+                            <tr data-id="{{$val['method_id']}}">
+                                <td data-field='method_name' class='update_field'>{{$val['method_name']}}</td>
+                                <td data-field='rate' class='update_field'>{{$val['rate']}}</td>
+                                <td data-field='over_rate' class='update_field'>{{$val['over_rate']}}</td>
+                            </tr>
+                            @endforeach
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="ibox-content">
+                        <button type="button" class="btn btn-info btn-sm">贷款类型利率</button>
+                        <br><br>
+                        <table class="table table-bordered" data-table='amount'>
+                        	<tr>
+                        		<th>类型名称</th>
+                                <th>月利率</th>
+                        		<th>滞纳金利率(日利率)</th>
+                        	</tr>
+                            @foreach($type as $key=>$val)
+                            <tr data-id="{{$val['type_id']}}">
+                                <td data-field='type_name' class='update_field'>{{$val['type_name']}}</td>
+                                <td data-field='rate' class='update_field'>{{$val['rate']}}</td>
+                                <td data-field='over_rate' class='update_field'>{{$val['over_rate']}}</td>
+                            </tr>
+                            @endforeach
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -47,6 +117,52 @@
     <script src="{{ URL::asset('admin/js/plugins/peity/jquery.peity.min.js') }}"></script>
 
     <!-- 自定义js -->
+    <script>
+    //点击修改数据
+// $(document).on("click",".update_field",function(){
+//     var obj = $(this);
+//     var id = obj.parents('tr').attr('data-id');
+//     var tablename =obj.parents('table').attr('data-table');
+//     var filter = obj.attr('data-field');
+
+//     // 获取当前操作文本内容  
+//     var con = obj.html();  
+//     // 将当前文本内容替换为文本框  
+//     obj.html("<input class='filter' type=\"text\"/>");  
+//     var obj1= $(".filter");  
+//     // 为文本框赋值并获取焦点  
+//     obj1.val("").focus().val(con); 
+//     obj.removeclass('update_field');
+//     // 文本框失去焦点事件  
+//     obj1.blur(function () {  
+//         // 获取修改后的文本框的值  
+//         var new_value = obj1.val();  
+//         // 此处添加ajax事件修改对应数据源中数据(此处ajax请求根据ID修改name的值) 修改数据成功后执行以下操作 赋值  
+//         $.ajax({
+//             type:'post',
+//             url:loacal+update,
+//             data:{
+//                 "_token":"{{csrf_token()}}",
+//                 'tablename':tablename,
+//                 'id' : id,
+//                 'filter':filter,
+//                 'new_value':new_value
+//             },
+//             dataType:'json',
+//             success:function(data){
+//                 // if (data.error==1) {
+//                 //     obj.html(new_value);
+
+//                 // }else{
+//                 //     alert(data.msg);
+//                 //     obj.html(con);
+//                 // }
+//                 obj.addclass('update_field');
+//             }
+//         });
+//     })
+// })
+    </script>
     <script src="{{ URL::asset('admin/js/content.js?v=1.0.0') }}"></script>
 
     <!-- iCheck -->

@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Input;
 use App\Models\Loan;
 use App\Models\Record;
 use App\Models\Overdue;
-use App\Models\Loanuser;
 use App\Models\date;
 use App\Models\method;
 use App\Models\type;
