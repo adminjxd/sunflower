@@ -235,9 +235,9 @@ class InvestController extends Controller
         $time = Carbon::now();
         $re=$this->doInvest($user_id,$time,$money,$loan_id);
         if($re){
-            return '您投资'.$money.'成功';
+            return 1;
         }else{
-            return '哎呀~投资失败了，重试试吧';
+            return 0;
         }
     }
 }

@@ -37,7 +37,7 @@
                     <?php if($bar<100){?>
                     <li style="margin:3px 0 ;width:180px; height: 40px; line-height: 40px;" class="ui-btn btn-orange">
 
-                            <a style="font-size: 20px" class="ui-btn" href="{{asset('invest/zfb')}}?project=deposit/<?=$info->loan_id?>">投  资</a>
+                            <a style="font-size: 20px" class="ui-btn" href="{{asset('invest/zfb')}}?project=invest/<?=$info->loan_id?>">投  资</a>
 
                     </li>
 
