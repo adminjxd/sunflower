@@ -25,7 +25,18 @@
 <?php
 //付款金额
 $total_fee = $_POST['WIDtotal_fee'];
-//截去alipay
+//付款类型
+$body = $_POST['WIDbody'];
+if($body=="Sun 存宝"){
+    $subject=$body;
+}else{
+    $subject='散标投资';
+}
+//订单号
+session_start();
+$user_id =isset($_SESSION['user_id'])?$_SESSION['user_id']:'1';
+$out_trade_no='SF'.time().$user_id;
+//路径  截去alipay
 $path=substr(__PATH__,0,-6);
 /************************************************************/
 //构造要请求的参数数组，无需改动
@@ -36,10 +47,10 @@ $parameter = array(
         "payment_type"	=> '1', // 支付类型
         "notify_url"	=> $path."notify", // 服务器异步通知页面路径
         "return_url"	=> $path."returns", // 页面跳转同步通知页面路径
-        "out_trade_no"	=> "gh141m134277ghm454117", // 商户网站订单系统中唯一订单号
-        "subject"	=> "Sun 存宝", // 订单名称
+        "out_trade_no"	=> $out_trade_no, // 商户网站订单系统中唯一订单号
+        "subject"	=> $subject, // 订单名称
         "total_fee"	=> $total_fee, // 付款金额
-        "body"	=> "Sun 存宝", // 订单描述 可选
+        "body"	=> $body, // 订单描述 可选
         "_input_charset"	=> 'utf-8', // 字符编码格式
 );
 // 参数排序

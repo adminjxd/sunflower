@@ -15,26 +15,44 @@
 //首页
 Route::get('index/index', ['uses'=>'Home\IndexController@index','as'=>'index/index']);
 Route::get('/', ['uses'=>'Home\IndexController@index','as'=>'index/index']);
+
 //注册
 Route::get('register/reg', ['uses'=>'Home\RegisterController@reg','as'=>'register/reg']);
+//检测用户名是否存在
+Route::post('register/check_name', 'Home\RegisterController@checkName');
+//注册执行
+Route::post('register/reg_do', 'Home\RegisterController@regDo');
+//注册成功
+Route::get('register/reg_success/{username}', 'Home\RegisterController@regSuccess');
+// 验证码验证
+Route::post('register/check_yzm', 'Home\RegisterController@checkYzm');
+// 手机发送验证码
+Route::post('register/phone_send', 'Home\RegisterController@phoneSend');
+
+
 //登录
 Route::get('login/login', ['uses'=>'Home\LoginController@login','as'=>'login/login']);
-
+//登陆验证
+Route::post('login/login_check', 'Home\LoginController@loginCheck');
+//退出
+Route::get('login/loginout', 'Home\LoginController@loginout');
+//更换验证码
+Route::post('login/change_captcha', 'Home\LoginController@changeCaptcha');
 //我要投资
-//Route::get('invest', 'Home\InvestController');
 Route::get('invest', ['uses'=>'Home\InvestController@index','as'=>'invest']);
-
-    //投资-Sun 存宝 支付宝回调
-Route::get('invest/returns', 'Home\InvestController@returns');
-Route::get('invest/notify', 'Home\InvestController@notify');
-    //投资、投资详情页 展示
+//支付同步
+Route::get('invest/returns', ['uses'=>'Home\InvestController@returns','as'=>'invest/returns']);
+//支付异步
+Route::get('invest/notify', ['uses'=>'Home\InvestController@notify','as'=>'invest/notify']);
+//散标详情
+Route::get('invest/infor', ['uses'=>'Home\InvestController@infor','as'=>'invest/infor']);
+//账户投资
+Route::any('invest/zhInvest', ['uses'=>'Home\InvestController@zhInvest','as'=>'invest/zhInvest']);
+//投资展示
 Route::any('invest/{action}', function($action='invest'){
     return view("home.invest.$action");
 });
-
-//Route::get('invest/list', ['uses'=>'Home\InvestController@list','as'=>'invest/list']);
 Route::get('invest/info', ['uses'=>'Home\InvestController@info','as'=>'invest/info']);
-
 //安全保障
 Route::get('safe/help', ['uses'=>'Home\SafeController@help','as'=>'safe/help']);
 //上传头像

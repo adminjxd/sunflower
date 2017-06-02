@@ -168,7 +168,7 @@
                 <input type="hidden" size="30" name="WIDout_trade_no" value="ghm123123123123" />
 
                 <input type="hidden" size="30" name="WIDsubject" value="Sun 存宝"/>
-                <input type="hidden" size="30" name="WIDbody" value="Sun 存宝" />
+                <input type="hidden" size="30" name="WIDbody" value="<?=$_GET['project']?>" />
 
                 <input type="hidden" size="30" name="WIDshow_url" value="http://localhost/zfb/in.php" />
 
