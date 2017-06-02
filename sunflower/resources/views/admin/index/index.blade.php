@@ -247,7 +247,7 @@
                 </nav>
             </div>
             <div class="row J_mainContent" id="content-main">
-                <iframe id="J_iframe" width="100%" height="100%" src="{{ URL::route('aindex/home') }}" frameborder="0" data-id="index_v1.html" seamless></iframe>
+                <iframe id="J_iframe" scrolling="auto" width="100%" height="100%" src="{{ URL::route('aindex/home') }}" frameborder="0" data-id="index_v1.html" seamless></iframe>
             </div>
         </div>
         <!--右侧部分结束-->
