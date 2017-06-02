@@ -80,12 +80,22 @@ $(document).ready(function() {
       </ul>
       <ul class="fn-right header-top-ul">
         <li> <a href="{{ URL::route('index/index') }}" class="app">返回首页</a> </li>
+        <?php $userinfo = session('userinfo'); ?>
+        @if (empty($userinfo))
         <li>
           <div class=""><a href="{{ URL::route('register/reg') }}" class="c-orange" title="免费注册">免费注册</a></div>
         </li>
         <li>
           <div class=""><a href="{{ URL::route('login/login') }}" class="js-login" title="登录">登录</a></div>
         </li>
+        @else
+        <li>
+          <div class="">欢迎<font color=red>{{$userinfo['username']}}</font>登陆！</div>
+        </li>
+        <li>
+          <div class=""><a href="{{ URL::asset('login/loginout') }}" title="退出">退出</a></div>
+        </li>
+        @endif
       </ul>
     </div>
   </div>

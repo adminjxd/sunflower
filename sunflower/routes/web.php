@@ -15,10 +15,30 @@
 //首页
 Route::get('index/index', ['uses'=>'Home\IndexController@index','as'=>'index/index']);
 Route::get('/', ['uses'=>'Home\IndexController@index','as'=>'index/index']);
+
 //注册
 Route::get('register/reg', ['uses'=>'Home\RegisterController@reg','as'=>'register/reg']);
+//检测用户名是否存在
+Route::post('register/check_name', 'Home\RegisterController@checkName');
+//注册执行
+Route::post('register/reg_do', 'Home\RegisterController@regDo');
+//注册成功
+Route::get('register/reg_success/{username}', 'Home\RegisterController@regSuccess');
+// 验证码验证
+Route::post('register/check_yzm', 'Home\RegisterController@checkYzm');
+// 手机发送验证码
+Route::post('register/phone_send', 'Home\RegisterController@phoneSend');
+
+
 //登录
 Route::get('login/login', ['uses'=>'Home\LoginController@login','as'=>'login/login']);
+//登陆验证
+Route::post('login/login_check', 'Home\LoginController@loginCheck');
+//退出
+Route::get('login/loginout', 'Home\LoginController@loginout');
+//更换验证码
+Route::post('login/change_captcha', 'Home\LoginController@changeCaptcha');
+
 
 //我要投资
 //Route::get('invest', 'Home\InvestController');
