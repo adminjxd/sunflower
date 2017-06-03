@@ -139,9 +139,24 @@ Route::get('auser/show_userinfo', 'Admin\UserController@showUserinfo');
 Route::get('auser/reputation', 'Admin\UserController@reputation');
 
 //后台借贷模块
+//利率展示
 Route::get('aloan/interest_rate_list', 'Admin\LoanController@interestRateList');
+//利率修改
+Route::post('aloan/updateRate', 'Admin\LoanController@updateRate');
+//借贷记录列表
 Route::get('aloan/borrowing_list', 'Admin\LoanController@borrowingList');
+//借贷记录搜索列表
+Route::post('aloan/search', 'Admin\LoanController@searchloan');
+//借贷记录详情
+Route::get('aloan/loanInfo', 'Admin\LoanController@loanInfo');
+//放款
+Route::post('aloan/success', 'Admin\LoanController@success');
+//回访验证
+Route::post('aloan/call', 'Admin\LoanController@call');
+//还款记录列表
 Route::get('aloan/repayment_list', 'Admin\LoanController@repaymentList');
+//还款记录搜索列表
+Route::post('aloan/searchrecord', 'Admin\LoanController@searchRecord');
 
 //后台积分模块
 Route::get('aintegral/ticket_list', 'Admin\IntegralController@ticketList');
