@@ -1,7 +1,6 @@
 <!--layouts 引入头部底部-->
 @extends('home.layouts.layout')
 @section('content')
-
 <!--个人中心-->
 <div class="wrapper wbgcolor">
   <div class="w1200 personal">
