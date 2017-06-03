@@ -64,6 +64,57 @@ $(document).ready(function() {
 
 
 </script>
+
+    <script>
+        $(function () {
+            //支付
+            $('.zf').click(function () {
+                var obj=$(this);
+                if(checkLogin()){
+                    var zfDiv=obj.prev('.zf-div');
+                    $('.zf').show();
+                    $('.zf-div').hide();
+                    zfDiv.show();
+                    obj.hide();
+                }
+            });
+            //检测登陆
+            function checkLogin(){
+                var user_id="<?php echo $user_id?>";
+                if(user_id=='-1'){
+                    alert('投资这么慎重的事，请先登陆哦');
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+            //账户余额支付
+            $('.zh').click(function () {
+                var obj=$(this);
+                var p=prompt('请输入您要投入的金额：');
+                var method='zh';
+                var loan_id=obj.attr('loan_id');
+                if(p){
+                    $.ajax({
+                        type:'post',
+                        url:'{{asset('invest/zhInvest')}}',
+                        data:{
+                            money:p,
+                            method:method,
+                            loan_id:loan_id,
+                            _token:'{{ csrf_token() }}'
+                        },
+                        dataType:'json',
+                        success: function (data) {
+                            $('.zf-div').hide();
+                            $('.zf').show();
+                            alert(data.msg);
+                        }
+                    })
+                }
+            })
+        })
+    </script>
 </head>
 <body>
 <header>

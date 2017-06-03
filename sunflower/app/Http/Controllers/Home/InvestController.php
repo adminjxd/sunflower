@@ -27,7 +27,6 @@ class InvestController extends Controller
         $loan=$this->getRights();
         //提示信息
         $msg=isset($_GET['msg'])?$_GET['msg']:'请信任我们';
-        //抵押物信息  房主信息
         return view('home.invest.invest',['invest_total'=>$invest_total,'return_total'=>$return_total,'rate'=>$rate,'loan'=>$loan,'msg'=>$msg]);
     }
 
@@ -155,7 +154,7 @@ class InvestController extends Controller
     }
     /*
      * Sun 存宝 入库*/
-    protected function doSun($u_id,$time,$money){
+    protected function doSun($u_id,$time,$money,$method=''){
         $detail = $time . '存入Sun 存宝' . $money . '元人名币';
         $uMoney = DB::table('deposit')->select('total_money', 'money')->where('user_id', $u_id)->first();
         //修改 存款
@@ -169,9 +168,17 @@ class InvestController extends Controller
             //首次 存款
             $re1 = DB::insert("insert into sun_deposit (`id`,`user_id`,`money`,`earnings`,`total_money`) values (null,$u_id,'$money',0,'$money')", [1, 'Dayle']);
         }
+        //账户余额修改
+        if($method){
+            $user=$this->getUser($u_id);
+            $balance=$user[0]->balance;
+            $re3=DB::table('user_profile')->where('user_id', $u_id)->update(['balance' =>$balance-$money]);
+        }else{
+            $re3=1;
+        }
         //插入明细表
         $re2 = DB::insert("insert into sun_deposit_record (`id`,`user_id`,`date`,`total_money`,`detail`,`type`) values (null,$u_id,'$time','$newTotal','$detail',1)", [1, 'Dayle']);
-        if($re1&&$re2){
+        if($re1&&$re2&&$re3){
             return true ;
         }else{
             return false;
@@ -219,25 +226,43 @@ class InvestController extends Controller
     }
     /*
      * 获取当前用户ID*/
-    protected function getUID(){
-        //调试 修改
-        session(['user_id' => '2']);
-        $user_id =session('user_id');
-        return $user_id;
+    public function getUID(){
+        if(session('userinfo')){
+            $user =session('userinfo');
+            $user_id=$user['id'];
+            return $user_id;
+        }else{
+            return -1;
+        }
+
     }
 
     /*
      * 账户余额投资*/
     public function zhInvest(){
-        $money=$_POST['money'];
-        $loan_id=$_POST['loan_id'];
         $user_id=$this->getUID();
-        $time = Carbon::now();
-        $re=$this->doInvest($user_id,$time,$money,$loan_id);
-        if($re){
-            return 1;
+        if($user_id!='-1'){
+            $time = Carbon::now();
+            $money=$_POST['money'];
+            $method=$_POST['method'];
+            $loan_id=isset($_POST['loan_id'])?$_POST['loan_id']:'';
+            if($loan_id){
+                $re=$this->doInvest($user_id,$time,$money,$loan_id);
+            }else{
+                $re=$this->doSun($user_id,$time,$money,$method);
+            }
+            if($re){
+                $msg['code']=1;
+                $msg['msg']='恭喜您投资成功，请查看投资记录';
+            }else{
+                $msg['code']=0;
+                $msg['msg']='哎呀~投资失败了，重新试试吧';
+            }
         }else{
-            return 0;
+            $msg['code']=-1;
+            $msg['msg']='投资这么慎重的事，请先登陆哦';
         }
+        return json_encode($msg);
+
     }
 }

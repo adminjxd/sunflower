@@ -38,6 +38,7 @@ Route::post('login/login_check', 'Home\LoginController@loginCheck');
 Route::get('login/loginout', 'Home\LoginController@loginout');
 //更换验证码
 Route::post('login/change_captcha', 'Home\LoginController@changeCaptcha');
+
 //我要投资
 Route::get('invest', ['uses'=>'Home\InvestController@index','as'=>'invest']);
 //支付同步
@@ -48,6 +49,8 @@ Route::get('invest/notify', ['uses'=>'Home\InvestController@notify','as'=>'inves
 Route::get('invest/infor', ['uses'=>'Home\InvestController@infor','as'=>'invest/infor']);
 //账户投资
 Route::any('invest/zhInvest', ['uses'=>'Home\InvestController@zhInvest','as'=>'invest/zhInvest']);
+//检测是否登陆
+Route::any('invest/getUID', ['uses'=>'Home\InvestController@getUID','as'=>'invest/getUID']);
 //投资展示
 Route::any('invest/{action}', function($action='invest'){
     return view("home.invest.$action");

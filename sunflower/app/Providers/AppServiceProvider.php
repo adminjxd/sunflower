@@ -13,7 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $user=session('userinfo');
+        $user_id=$user['id'];
+        view()->share('user_id', $user_id);
     }
 
     /**

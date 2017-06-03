@@ -22,8 +22,13 @@
                             <li>自动复投</li>
                             <li>免费存转</li>
                             <li>
-                                <a style="background-color: #ffffff" href="{{asset('invest/zfb')}}?project=Sun 存宝">
-                                <img class="deposit"  src="{{asset('images/zfb.png')}}" alt="立即存入"/></a>
+                                <div class="zf-div" style="display: none">
+                                    <a href="javascript:void(0);" class="ui-btn btn-orange zh" >账户余额</a>
+                                    <br/>
+                                    <a href="{{asset('invest/zfb')}}?project=Sun 存宝" class="ui-btn btn-orange">支付宝</a>
+                                </div>
+                                <a class="ui-btn btn-orange zf"  href="javascript:void(0);">立即投资</a>
+
                             </li>
                         </ul>
                     </div>
@@ -90,7 +95,7 @@
                                 <?php if($v->bar>=100){?>
                                 <a class="ui-btn btn-gray" href="{{asset('invest/infor')}}?l=<?=$v->loan_id?>">还款中</a>
                                 <?php }else{?>
-                                    <div id="zf" style="display: none">
+                                    <div class="zf-div" style="display: none">
                                         <a href="javascript:void(0);" class="ui-btn btn-orange zh" loan_id="<?=$v->loan_id?>" >账户余额</a>
                                         <a href="{{asset('invest/zfb')}}?project=invest/<?=$v->loan_id?>" class="ui-btn btn-orange">支付宝</a>
                                     </div>
@@ -99,46 +104,6 @@
                             </li>
                         </ul>
                     </div>
-
-                    <script>
-                        $(function () {
-                            //支付
-                            $('.zf').click(function () {
-                               $('#zf').show();
-                                $(this).hidden();
-                            });
-                            //账户余额支付
-                            $('.zh').click(function () {
-                                var obj=$(this);
-                                var p=prompt('投资金额：');
-                                var method='zh';
-                                var loan_id=obj.attr('loan_id');
-
-                                if(p){
-                                    $.ajax({
-                                        type:'post',
-                                        url:'{{asset('invest/zhInvest')}}',
-                                        data:{
-                                            money:p,
-                                            method:method,
-                                            loan_id:loan_id,
-                                            _token:'{{ csrf_token() }}'
-                                        },
-                                        success: function (num) {
-                                            $('#zf').hide();
-                                            $('.zf').show();
-                                            if(num==1){
-                                                alert('恭喜您投资成功，请查看投资记录')
-                                            }else{
-                                                alert('哎呀~投资失败了，重新试试吧')
-                                            }
-                                        }
-                                    })
-                                }
-                            })
-                        })
-                    </script>
-
                     <?php }?>
 
                     <!------------投资列表-------------->

@@ -36,14 +36,17 @@
                     </li>
                     <?php if($bar<100){?>
                     <li style="margin:3px 0 ;width:180px; height: 40px; line-height: 40px;" class="ui-btn btn-orange">
-
-                            <a style="font-size: 20px" class="ui-btn" href="{{asset('invest/zfb')}}?project=invest/<?=$info->loan_id?>">投  资</a>
-
+                        <div class="zf-div" style="display: none">
+                            <a href="javascript:void(0);" class="ui-btn btn-orange zh" loan_id="<?=$info->loan_id?>" >账户余额</a>
+                            <a href="{{asset('invest/zfb')}}?project=invest/<?=$info->loan_id?>" class="ui-btn btn-orange">支付宝</a>
+                        </div>
+                        <a class="ui-btn btn-orange zf" style="font-size: 20px"  href="javascript:void(0);">投  资</a>
                     </li>
 
                     <li> <span >投资范围：</span> <span id="account_range"> 50元~
 
-            不限 </span> </li><?php }?>
+            不限 </span> </li>
+                    <?php }?>
                 </ul>
             </div>
             <div class="mod-right mod-status">
