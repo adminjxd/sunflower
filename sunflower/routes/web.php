@@ -83,6 +83,8 @@ Route::get('ucenter/openthirdparty', ['uses'=>'Home\UcenterController@openthirdp
 Route::get('ucenter/recharge', ['uses'=>'Home\UcenterController@recharge','as'=>'ucenter/recharge']);
 //提现
 Route::get('ucenter/withdrawdeposit', ['uses'=>'Home\UcenterController@withdrawdeposit','as'=>'ucenter/withdrawdeposit']);
+//提现记录
+Route::post('ucenter/moveMoney', ['uses'=>'Home\UcenterController@moveMoney','as'=>'ucenter/moveMoney']);
 //我的红包
 Route::get('ucenter/redpacket', ['uses'=>'Home\UcenterController@redpacket','as'=>'ucenter/redpacket']);
 //兑换历史
@@ -91,6 +93,8 @@ Route::get('ucenter/changehistory', ['uses'=>'Home\UcenterController@changehisto
 Route::get('ucenter/systeminfo', ['uses'=>'Home\UcenterController@systeminfo','as'=>'ucenter/systeminfo']);
 //账户设置
 Route::get('ucenter/accountset', ['uses'=>'Home\UcenterController@accountset','as'=>'ucenter/accountset']);
+
+
 //关于我们
 Route::get('aboutus/announcement', ['uses'=>'Home\AboutUsController@announcement','as'=>'aboutus/announcement']);
 //公司简介
