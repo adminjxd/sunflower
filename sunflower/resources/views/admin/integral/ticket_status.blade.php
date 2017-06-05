@@ -26,13 +26,35 @@
                     <h5>优惠券使用状况</h5>
                     </div>
                     <div class="ibox-content">
-                        <button type="button" class="btn btn-info btn-sm">自定义</button>
                         <br><br>
                         <table class="table table-bordered">
-                        	<tr>
-                        		<td>123</td>
-                        		<td>456</td>
-                        	</tr>
+                            <tr>
+                                <th>所属兑换券</th>
+                                <th>面值</th>
+                                <th>兑换码</th>
+                                <th>是否使用</th>
+                                <th>使用者账户</th>
+                            </tr>
+                            @foreach($info as $k=>$v)
+                                <tr>
+                                    <td>{{$v['c_name']}}</td>
+                                    <td>{{$v['c_value']}}</td>
+                                    <td>{{$v['CDKEY']}}</td>
+                                    @if($v['is_statues']==0)
+                                        <td>暂未使用</td>
+                                    @else
+                                        <td>已经使用</td>
+                                    @endif
+                                    @if(empty($v['user_name']))
+                                        <td>没人兑换</td>
+                                    @else
+                                        <td>{{$v['user_name']}}</td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td style="text-align:center" colspan="5"> {!! $info->links() !!}</td>
+                            </tr>
                         </table>
                     </div>
                 </div>

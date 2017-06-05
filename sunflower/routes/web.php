@@ -175,10 +175,21 @@ Route::post('aloan/searchrecord', 'Admin\LoanController@searchRecord');
 
 //后台积分模块
 Route::get('aintegral/ticket_list', 'Admin\IntegralController@ticketList');
-Route::get('aintegral/ticket_status', 'Admin\IntegralController@ticketStatus');
-Route::get('aintegral/goods_list', 'Admin\IntegralController@goodsList');
+Route::get('aintegral/ticket_status', 'Admin\IntegralController@coupons_status');
 Route::get('aintegral/add_goods', 'Admin\IntegralController@addGoods');
+Route::get('aintegral/goods_uplist/{id}', 'Admin\IntegralController@goods_uplist');
 Route::get('aintegral/goods_order', 'Admin\IntegralController@goodsOrder');
+Route::get('aintegral/coupons_true/{name}', 'Admin\IntegralController@coupons_true');
+Route::get('aintegral/goods_list', 'Admin\IntegralController@goods_list');
+Route::post('aintegral/goods_add', 'Admin\IntegralController@goods_add');
+Route::post('aintegral/goods_up', 'Admin\IntegralController@goods_up');
+Route::post('aintegral/goods_ajax_img', 'Admin\IntegralController@goods_ajax_img');
+Route::post('aintegral/goods_del', 'Admin\IntegralController@goods_del');
+Route::post('aintegral/goods_ajax_sta', 'Admin\IntegralController@goods_ajax_sta');
+Route::post('aintegral/coupons_true_add', 'Admin\IntegralController@coupons_true_add');
+Route::post('aintegral/coupons_add','Admin\IntegralController@coupons_add');
+Route::post('aintegral/coupons_del','Admin\IntegralController@coupons_del');
+
 
 //后台众筹模块
 Route::get('acrowd/category_list', 'Admin\CrowdfundingController@categoryList');
