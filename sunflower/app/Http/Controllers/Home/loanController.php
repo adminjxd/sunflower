@@ -5,7 +5,8 @@ namespace App\Http\Controllers\home;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Input; 
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redis; 
 use App\Models\Loan;
 use App\Models\Record;
 use App\Models\Overdue;
@@ -15,6 +16,7 @@ use App\Models\type;
 use App\Models\amount;
 use App\Models\Profile;
 use App\Models\User;
+use App\Models\REST;
 
 class loanController extends Controller
 {
@@ -48,18 +50,27 @@ class loanController extends Controller
         //防止xss攻击
         //防止sql注入
         $post = Input::get();
-        //短信验证
-        //if(clean($post['msg'])){
-            unset($post['msg']);
-            unset($post['_token']);
-            foreach ($post as $key=>$val) {
-                //$post[$key] = clean($val);//防止xss攻击
-                if (!is_numeric($val)) {
-                    $arr['error']['code'] = 1;
-                    $arr['error']['message'] = '请重新正确输入信息';
-                    return json_encode($arr);
-                }
+        unset($post['_token']);
+        foreach ($post as $key=>$val) {
+            //$post[$key] = clean($val);//防止xss攻击
+            if (!is_numeric($val)) {
+                $arr['error']['code'] = 1;
+                $arr['error']['message'] = '请重新正确输入信息';
+                return json_encode($arr);
             }
+        }
+        //短信验证
+        $sess_phone = session($post['phone']);
+		if (!empty($sess_phone)) {
+			$last_time = $sess_phone['send_time'];
+			$code = $sess_phone['phonecode'];
+			$num = time() - $last_time;
+			//验证正确性及是否过期
+			if ($num > 600 || $code != $post['msg']) {
+				$arr['error']['code'] = 1;
+				$arr['error']['msg'] = '验证码错误或已过期';
+				return json_encode($arr);
+			}
             //判断用户是否已注册
             $profile = Profile::where('phone',$post['phone'])->first();
             if ($profile!='') {
@@ -83,22 +94,57 @@ class loanController extends Controller
             } else {
                 $arr['error']['code'] = 1;
                 $arr['error']['message'] = '生成记录失败，请您与管理员联系';
-            }          
-        //}else{
-            // $arr['error']['code'] = 1;
-            // $arr['error']['message'] = '短信验证不正确，请您重新验证';
-        //}
+            } 
+		} else {
+            $arr['error']['code'] = 1;
+			$arr['error']['msg'] = '非法请求';
+		}
+
         return json_encode($arr);
     }
 
-    //发送短信
-    function wapSendMsg()
-    {
-        //发送短信进行手机号验证
-        //将短信内容进行存储cookie
-        $arr['error']['code'] = 0;
-        return json_encode($arr);               
-    }
+    /**
+	 * @action: phoneSend 手机发送验证码
+	 */
+	public function wapSendMsg()
+	{
+        //17768579986
+        //$ret['error'] = ['code' => '0', 'msg' => '发送成功'];
+        //return json_encode($ret);
+		$phone = Input::get('phone');
+        $ret['error'] = ['code' => '0', 'msg' => '发送成功'];
+        $time = time();
+        // 检测发短信间隔是否在一分钟内
+        $phonecode = session($phone);
+        if (!empty($phonecode)) {
+            $last_time = $phonecode['send_time'];
+            $num = $time - $last_time;
+            if ($num <= 60) {
+                $ret['error']['code'] = 3;
+                $ret['error']['msg'] = '一分钟之内只能发送一次验证码';
+                return json_encode($ret);
+            }
+        }
+	        //生成随机验证码
+	        $p_code = rand(100000, 999999);
+	        //构建短信发送数组，由验证码和时间(min)组成
+			$datas = ["$p_code",'10'];
+			// 初始化REST SDK
+		    $rest = new REST();
+		    // 发送模板短信
+		    $result = $rest->sendTemplateSMS($phone,$datas);
+		    if ($result['statusCode'] != 0 || $result == NULL ) {
+		    	$ret['error']['code'] = '2';
+	        	$ret['error']['msg'] = '发生异常，请联系管理员或稍候再试！';
+		    } else {
+		    	//构建手机验证码的SESSION存储数据
+				$data = ['phonecode' => $p_code, 'send_time' =>$time];
+		        //手机验证码存session
+		        session(["$phone" => $data]);
+		    }
+
+        return json_encode($ret);
+	}
 
     //重新发送短信
     function wapReSendMsg()
@@ -165,6 +211,8 @@ class loanController extends Controller
         }
     	return $loan->save();
     }
+    
+    //测试
     function test()
     {
         $data = Profile::where('phone',15124573360)->first();
@@ -174,5 +222,13 @@ class loanController extends Controller
             return 2;
         }
         
+    }
+
+     //redis测试
+    function redis()
+    {
+        Redis::set('test','hello world');
+        $user = Redis::get('test');
+        print_r($user);
     }
 }

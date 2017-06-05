@@ -99,7 +99,7 @@ var _hmt = _hmt || [];
    <div class="lp-d-cont">
     <div class="title">
      <h4>验证账户名</h4>
-     <span id="fixedClose"></span>
+     <span id="fixedClose"><h2>X<h2></span>
     </div>
     <div class="content">
      <div class="dialog_content">
