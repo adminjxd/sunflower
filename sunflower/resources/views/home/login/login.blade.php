@@ -26,6 +26,10 @@
 					<a href="javascript:void(0);" class="blue" id="change_captcha">看不清？换一张</a>
 					<span id="captcha_sign"></span>
 				</li>
+                <li>
+                    <span class="dis"></span>
+                    <a href="https://api.weibo.com/oauth2/authorize?client_id=3465828263&redirect_uri=http://www.dev.com/login/oauth_login"><img src="{{ URL::asset('/images/sina.gif') }}" alt=""></a>
+                </li>
 				<li class="btn">
 					<input type="button" class="radius1" value="立即登录" id="submitBtn">
 				</li>

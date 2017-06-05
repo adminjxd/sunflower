@@ -38,6 +38,11 @@ Route::post('login/login_check', 'Home\LoginController@loginCheck');
 Route::get('login/loginout', 'Home\LoginController@loginout');
 //更换验证码
 Route::post('login/change_captcha', 'Home\LoginController@changeCaptcha');
+//第三方登陆
+Route::get('login/oauth_login', 'Home\LoginController@oauthLogin');
+//绑定帐号
+Route::get('login/bind_user/{uid}', 'Home\LoginController@bindUser');
+
 
 
 //我要投资
