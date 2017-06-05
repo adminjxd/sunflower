@@ -17,7 +17,11 @@ class UcenterController extends Controller
 	 */
 	public function myAccount()
 	{
-		$user_id = 1;
+		$user_info = session('userinfo');
+		if (empty($user_info)) {
+			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
+		}
+		$user_id = $user_info['id'];
 		 /**
          * 查询用户表的信息，遍历数据
          * 用户名，上次登录的时间
@@ -47,7 +51,11 @@ class UcenterController extends Controller
 	public function upload(Request $request)
     {
         //根据用户的id修改头像
-        $user_id = 1;
+        $user_info = session('userinfo');
+		if (empty($user_info)) {
+			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
+		}
+		$user_id = $user_info['id'];
         if ($request->ajax()) {
             $file = $request->file('upload');
             if(!empty($file))
@@ -101,7 +109,11 @@ class UcenterController extends Controller
     // 发起支付请求
 	public function Alipay()
 	{
-		$user_id = 1;
+		$user_info = session('userinfo');
+		if (empty($user_info)) {
+			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
+		}
+		$user_id = $user_info['id'];
         //支付所需的订单号（用户id + 当前时间戳+4位随机数）
         $Ordernumber = $user_id . time().rand(1000,9999);
 		$alipay = app('alipay.web');
@@ -126,7 +138,11 @@ class UcenterController extends Controller
 	{
 		//print_r($_GET);die;
 		//用户id
-		$user_id = 1;
+		$user_info = session('userinfo');
+		if (empty($user_info)) {
+			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
+		}
+		$user_id = $user_info['id'];
 		if(!empty($_GET))
 		{
 			$userInfo = Userprofile::select('balance')->where('user_id','=',$user_id)->first()->toarray();
@@ -141,7 +157,11 @@ class UcenterController extends Controller
 	public function withdrawDeposit()
 	{
 		//当前用户id
-		$user_id = 1;
+		$user_info = session('userinfo');
+		if (empty($user_info)) {
+			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
+		}
+		$user_id = $user_info['id'];
 		$userInfo = Userprofile::select('balance')->where('user_id','=',$user_id)->first()->toarray();
 		$userInfo = substr($userInfo['balance'],0,-1);
 		return view('home/ucenter/withdraw_deposit',['balance' => $userInfo]);
@@ -151,7 +171,11 @@ class UcenterController extends Controller
 	*/
     public function moveMoney()
 	{         		
-		$user_id = 1; //用户ID
+		$user_info = session('userinfo');
+		if (empty($user_info)) {
+			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
+		}
+		$user_id = $user_info['id'];
 		$userInfo = Userprofile::select('balance')->where('user_id','=',$user_id)->first()->toarray();
 		//账户总金额
 		$countMoney = substr($userInfo['balance'],0,-1);

@@ -81,6 +81,8 @@ Route::get('ucenter/returnedmoney', ['uses'=>'Home\UcenterController@returnedmon
 Route::get('ucenter/openthirdparty', ['uses'=>'Home\UcenterController@openthirdparty','as'=>'ucenter/openthirdparty']);
 //充值
 Route::get('ucenter/recharge', ['uses'=>'Home\UcenterController@recharge','as'=>'ucenter/recharge']);
+//充值成功返回信息处理数据
+Route::get('ucenter/addmoney', ['uses'=>'Home\UcenterController@addmoney','as'=>'ucenter/addmoney']);
 //提现
 Route::get('ucenter/withdrawdeposit', ['uses'=>'Home\UcenterController@withdrawdeposit','as'=>'ucenter/withdrawdeposit']);
 //提现记录
