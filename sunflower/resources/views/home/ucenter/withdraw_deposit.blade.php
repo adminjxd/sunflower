@@ -41,7 +41,9 @@
 		//<![CDATA[
 			function checkActualMoney()
 			{
+				//提现金额
 				var actualMoney=Number($("#form\\:actualMoney").val());
+
 				var actualMessage=$("#actualMoney_message");
 				var nullFlag=actualMoney=="";
 				if(nullFlag==true)
@@ -55,6 +57,7 @@
 					$(actualMessage).hide();
 				}
 				var numberFlag=isNaN(actualMoney);
+				
 				if(numberFlag==true)
 				{
 					$(actualMessage).text("提现金额必须大于2.00 元，单笔不超过50 万");
@@ -91,9 +94,11 @@
 				{
 					$(actualMessage).hide();
 				}
-				var balance=Number("0.0");
+				var balance= Number($("#form\\:blance").html());
+				
 				//提现金额小于余额 
 				var legalFlag=(actualMoney-balance).toFixed(2)<=0;
+			
 				if(!legalFlag)
 				{
 					$(actualMessage).text("余额不足");
@@ -133,19 +138,22 @@
             <h6>填写提现金额</h6>
             <ul>
               <li> <span class="deposit-formleft">可用金额</span> <span class="deposit-formright"> <i>
-                <label id="form:blance"> 0.00</label>
+                <label id="form:blance">{{$balance}}</label>
                 </i>元 </span> </li>
               <li> <span class="deposit-formleft">提现金额</span> <span class="deposit-formright">
                 <input id="form:actualMoney" type="text" name="form:actualMoney" class="deposite-txt" maxlength="10">
                 元 </span> <span id="actualMoneyErrorDiv"><span id="actualMoney_message" style="display:none" class="error"></span></span> </li>
-              <li> <span class="deposit-formleft">提现费用</span> <em id="txfy" class="markicon fl"></em> <span class="deposit-formright deposit-formright1"> <i>
+               <li> <span class="deposit-formleft">收款账户</span> <span class="deposit-formright">
+                <input id="phone" type="text" name="form:actualMoney" class="deposite-txt" maxlength="11">
+                </span> <span id="actualMoneyErrorDiv"><span id="actualMoney_messages" style="display:none" class="error"></span></span> </li>
+							<li> <span class="deposit-formleft">提现费用</span> <em id="txfy" class="markicon fl"></em> <span class="deposit-formright deposit-formright1"> <i>
                 <label id="form:fee"> 0.00</label>
                 </i>元 </span> <span class="txarrow-show">提现金额的0.1%，最低不低于2元，最高100元封顶</span><span class="txicon-show"></span> </li>
               <li><span class="deposit-formleft">实际到账金额</span> <em id="dzje" class="markicon fl"></em> <span class="deposit-formright deposit-formright1"> <i>
                 <label id="form:cashFine"> 0.00</label>
                 </i> 元</span> <span class="dzarrow-show">提现金额 - 提现费用</span><span class="dzicon-show"></span> </li>
               <li>
-                <input type="submit" name="form:j_idt78" value="提现" class="btn-depositok" onclick="return checkActualMoney()">
+                <input type="button" name="form:j_idt78" value="提现" class="btn-depositok" onclick="return checkActualMoney()">
               </li>
             </ul>
           </div>
@@ -160,21 +168,72 @@
       </div>
     </div>
     <script type="text/javascript">
-			$("#form\\:actualMoney").focus(
-					   function(){
-						   	$(this).css({"font-size":"24px","font-weight":"bold","font-family":"Arial","border":"1px solid #0caffe"});
-						   if($("#form\\:actualMoney").val() == value) { 
-							   	$("#form\\:actualMoney").val("")
-								$(this).css({"font-size":"24px","font-weight":"bold","font-family":"Arial"});
-						   }
-						}).blur(
-						function(){
-						   $(this).css("border","1px solid #D0D0D0");
-						   if($("#form\\:actualMoney").val() == "") {
-							  	$(this).css({"color":"#D0D0D0","font-size":"14px","font-weight":"normal"});
-					}
-				})
+		  //计算实际提现的金额
+		  $("#form\\:actualMoney").keyup(function(){
+				var sum=Number($("#form\\:blance").html());
+				var actualMoney=Number($("#form\\:actualMoney").val());
+				var withdrawals = Math.ceil((actualMoney*0.01)*100)/100;
+				var actual = actualMoney - withdrawals ;
+				var actualMessage=$("#actualMoney_message");
+				if(actualMoney<=sum)
+				{
+					$("#form\\:cashFine").html(actual);
+				  $("#form\\:fee").html(withdrawals);
+					$(actualMessage).hide();
+				}
+				else
+				{					  
+						$(actualMessage).text("余额不足,最大金额"+sum);
+						$(actualMessage).show();
+				}
 				
+			})
+			//提现
+			$(".btn-depositok").click(function(){
+				var actualMessage=$("#actualMoney_messages");
+				//账户总金额
+				var sumMoney = $("#form\\:blance").html();
+				//提现金额
+				var actualMoney=Number($("#form\\:actualMoney").val());
+				//实际到账金额
+        var withdrawals = $("#form\\:cashFine").html();
+				//收款方账户
+				var phone = $('#phone').val();
+				if(phone == "")
+				{
+						$(actualMessage).text("收款方账户不能为空");
+						$(actualMessage).show();
+				}
+				else
+				{
+					 var reg= /^1[34578]\d{9}$/;
+					 if(reg.test(phone))
+					 {
+							if(sumMoney >= actualMoney && actualMoney>0)
+				      {
+								$(actualMessage).hide();
+								$.ajax({
+											type:"POST",
+											data:{actualMoney:actualMoney,withdrawals:withdrawals,phone,phone,sumMoney:sumMoney},
+											url:"{{asset("ucenter/moveMoney")}}",
+											dataType:"json",
+											success:function(data){
+												alert(data.message);
+												if(data.status == 1)
+												{
+													$("#form\\:blance").html(Number(sumMoney -actualMoney))
+												}
+											}
+									})
+				      }
+					 }
+					 else
+					 {
+						 	$(actualMessage).text("您输入的账户有误");
+					   	$(actualMessage).show();
+					 }
+				}
+			})			
 				function keyUpcheck()
 				{
 					$(this).css({"font-size":"24px","font-weight":"bold","font-family":"Arial"});
