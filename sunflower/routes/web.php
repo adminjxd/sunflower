@@ -38,6 +38,8 @@ Route::post('login/login_check', 'Home\LoginController@loginCheck');
 Route::get('login/loginout', 'Home\LoginController@loginout');
 //更换验证码
 Route::post('login/change_captcha', 'Home\LoginController@changeCaptcha');
+
+
 //我要投资
 Route::get('invest', ['uses'=>'Home\InvestController@index','as'=>'invest']);
 //支付同步
@@ -55,8 +57,18 @@ Route::any('invest/{action}', function($action='invest'){
 Route::get('invest/info', ['uses'=>'Home\InvestController@info','as'=>'invest/info']);
 //安全保障
 Route::get('safe/help', ['uses'=>'Home\SafeController@help','as'=>'safe/help']);
+
+
 //上传头像
 Route::post('ucenter/upload', ['uses'=>'Home\UcenterController@upload','as'=>'ucenter/upload']);
+//支付宝支付处理路由
+Route::get('ucenter/alipay','Home\UcenterController@Alipay');  // 发起支付请求
+Route::any('ucenter/notify','Home\UcenterController@AliPayNotify'); //服务器异步通知页面路径
+Route::any('ucenter/return','Home\UcenterController@AliPayReturn');  //页面跳转同步通知页面路径
+
+//支付宝异步处理测试
+Route::get('ucenter/test', ['uses'=>'Home\UcenterController@test','as'=>'ucenter/test']);
+
 //我的账户
 Route::get('ucenter/myaccount', ['uses'=>'Home\UcenterController@myaccount','as'=>'ucenter/myaccount']);
 //资金记录
@@ -71,6 +83,8 @@ Route::get('ucenter/openthirdparty', ['uses'=>'Home\UcenterController@openthirdp
 Route::get('ucenter/recharge', ['uses'=>'Home\UcenterController@recharge','as'=>'ucenter/recharge']);
 //提现
 Route::get('ucenter/withdrawdeposit', ['uses'=>'Home\UcenterController@withdrawdeposit','as'=>'ucenter/withdrawdeposit']);
+//提现记录
+Route::post('ucenter/moveMoney', ['uses'=>'Home\UcenterController@moveMoney','as'=>'ucenter/moveMoney']);
 //我的红包
 Route::get('ucenter/redpacket', ['uses'=>'Home\UcenterController@redpacket','as'=>'ucenter/redpacket']);
 //兑换历史
@@ -79,6 +93,8 @@ Route::get('ucenter/changehistory', ['uses'=>'Home\UcenterController@changehisto
 Route::get('ucenter/systeminfo', ['uses'=>'Home\UcenterController@systeminfo','as'=>'ucenter/systeminfo']);
 //账户设置
 Route::get('ucenter/accountset', ['uses'=>'Home\UcenterController@accountset','as'=>'ucenter/accountset']);
+
+
 //关于我们
 Route::get('aboutus/announcement', ['uses'=>'Home\AboutUsController@announcement','as'=>'aboutus/announcement']);
 //公司简介
