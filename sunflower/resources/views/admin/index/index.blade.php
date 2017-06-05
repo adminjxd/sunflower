@@ -185,7 +185,7 @@
                                 <a href="#">优惠券管理 <span class="fa arrow"></span></a>
                                 <ul class="nav nav-third-level">
                                     <li>
-                                        <a class="J_menuItem" href="{{ URL::asset('aintegral/ticket_list') }}">优惠券列表</a>
+                                        <a class="J_menuItem" href="{{ URL::asset('aintegral/ticket_list') }}">添加优惠券</a>
                                     </li>
                                     <li>
                                         <a class="J_menuItem" href="{{ URL::asset('aintegral/ticket_status') }}">优惠券使用状况</a>
