@@ -78,12 +78,19 @@ class LoginController extends Controller
      */
     public function changeCaptcha()
     {
+        //接值
+        $cap_key = Input::get('cap_key');
+        //销毁原验证码信息
+        session()->forget("$cap_key");
+
 		$builder = new CaptchaBuilder;
 		$builder->build();
 		$captcha = $builder->inline();  //获取图形验证码的url
-		session(['piccode' => $builder->getPhrase()]);
+        $value = $builder->getPhrase();
+        $key = time() . $value;
+        session(["$key" => $value]);
 		
-		return json_encode($captcha);
+		return json_encode(['cap_url'=>$captcha,'cap_key'=>$key]);
 	}
 
     /**
@@ -134,7 +141,7 @@ class LoginController extends Controller
         $oauth_info = Oauth_user::where('oauth_user_id', '=', md5($uid))->first();
         if(!$oauth_info)
         {
-            return redirect('login/bind_user/'.$uid);
+            return redirect('login/bind_user?uid='.$uid);
         }
         else
         {
@@ -148,21 +155,120 @@ class LoginController extends Controller
     //帐号绑定
     public function bindUser(Request $request)
     {
-        // echo $uid;
-        if($request->isMethod('get')){
-            echo 123;
+        // $uid = $request->input('uid');
+        $builder = new CaptchaBuilder;
+        $builder->build();
+        $captcha = $builder->inline();  //获取图形验证码的url
+        //将图形验证码的值写入到session中
+        $value = $builder->getPhrase();
+        $key = time() . $value;
+        session(["$key" => $value]);
+        return view('home/register/bind_user', ['captcha'=>$captcha,'cap_key'=>$key]);
+    }
+
+    //帐号绑定执行
+    public function bindDo()
+    {
+        //接值
+        $username = Input::get('username');
+        $captcha = Input::get('captcha');
+        $password = Input::get('password');
+        $b_sign = Input::get('b_sign');
+        $cap_key = Input::get('cap_key');
+        // $uid = Input::get('uid');
+        $uid = '123456';
+        $ret = ['retCode' => '0', 'msg' => ''];
+        //判断是绑定注册帐号还是已有帐号
+        if ($b_sign == '1') {
+            $piccode = session("$cap_key");
+            if ($captcha != $piccode) {
+                $ret['retCode'] = '3';
+                $ret['msg'] = '验证码错误';
+                return json_encode($ret);
+            }
+            //接值
+            $phone = Input::get('phone');
+            $verifyCode = Input::get('verifyCode');
+            //验证手机验证码的有效性
+            $sess_phone = session($phone);
+            if (!empty($sess_phone)) {
+                $last_time = $sess_phone['send_time'];
+                $code = $sess_phone['phonecode'];
+                $num = time() - $last_time;
+                //验证正确性及是否过期
+                if ($num > 60 || $code != $verifyCode) {
+                    $ret['msg'] = '验证码错误或已过期';
+                    return json_encode($ret);
+                }
+            } else {
+                $ret['msg'] = '非法请求';
+                return json_encode($ret);
+            }
+
+            //检测用户名
+            $res = User::where('username', '=', $username )->first();
+            if (!empty($res)) {
+                $ret['msg'] = '用户名已被注册！';
+            } else {
+                // 注册信息入库
+                $user_id = User::insertGetId(['username'=>$username,'password'=>md5($password)]);
+                $data = [
+                    'user_id' => $user_id,
+                    'phone' => $phone,
+                    'register_date' => date('Y-m-d H:i:s'),
+                    'last_logintime' => date('Y-m-d H:i:s'),
+                    'last_ip' => Request::getClientIp(),
+                    'head' => 'images/touxiang.png',
+                ];
+                $res = Profile::insert($data);
+
+                //注册之后免登陆
+                //session存储用户信息
+                $user_info = [
+                    'user_id' => $user_id,
+                    'username' => $username,
+                    'password' => md5($password),
+                ];
+                session(['userinfo' => $user_info]);
+                session()->forget("$phone");
+            }
         } else {
-            echo 456;
+            $piccode = session("$cap_key");
+            if ($captcha != $piccode) {
+                $ret['msg'] = '验证码错误';
+            } else {
+                //验证帐号密码的正确性 
+                $res = User::where('username', '=', $username )->where('password', '=', md5($password))->first();
+                if (!$res) {
+                    $ret['msg'] = '用户名密码错误';
+                } else {
+                    $user_id = $res['id'];
+                    //检测该帐号是否绑定过
+                    $oauth_info = Oauth_user::where('user_id', '=', $user_id )->first();
+                    if ($oauth_info) {
+                        $ret['msg'] = '该帐号已绑定';
+                    } else {
+                        session(['userinfo' => $res->toArray()]);
+                    }
+                }
+            }
         }
-        die;
+
+        //绑定帐号
         //第三方信息入库
         $data = [
             'oauth_user_id' => md5($uid),
             'oauth_id' => 1,
+            'user_id' => $user_id,
             'datetime' => date('Y-m-d H:i:s',time()),
         ];
-        $oauth_info_id = Oauth_user::insertGetId($data);
-        return view('home/login/bind', ['oau_id'=>$oau_id]);
+        Oauth_user::insert($data);
+        //存储session
+        $ret['retCode'] = 1;
+        $ret['msg'] = '绑定成功';
+        session()->forget("$cap_key");
+
+        return json_encode($ret);
     }
 
 }

@@ -100,6 +100,7 @@ class RegisterController extends Controller
 	        	'password' => md5($password),
 	        ];
 	        session(['userinfo' => $user_info]);
+	        session()->forget("$phone");
         }
 
         return json_encode($ret);
@@ -120,6 +121,7 @@ class RegisterController extends Controller
 	{
 		$verifyCode = Input::get('verifyCode');
         $byName = Input::get('byName');
+        $cap_key = Input::get('cap_key');
         $ret = ['retCode' => '1', 'msg' => '验证成功'];
         //判断验证码类型
         if ($byName == 'phonVerify') {
@@ -135,7 +137,7 @@ class RegisterController extends Controller
         	}
         } else {
         	//图片验证码
-	        $code = session('piccode');
+	        $code = session("$cap_key");
         }
         //检测验证码是否正确
         if ($verifyCode != $code) {
