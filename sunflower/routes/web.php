@@ -202,5 +202,6 @@ Route::get('acrowd/category_list', 'Admin\CrowdfundingController@categoryList');
 Route::get('acrowd/add_category', 'Admin\CrowdfundingController@addCategory');
 Route::get('acrowd/projects_list', 'Admin\CrowdfundingController@projectsList');
 Route::get('acrowd/projects_order', 'Admin\CrowdfundingController@projectsOrder');
-
+//身份证验证
+Route::post('ucenter/authentication', ['uses'=>'Home\UcenterController@authentication','as'=>'ucenter/authentication']);
 
