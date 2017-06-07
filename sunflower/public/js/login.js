@@ -101,7 +101,7 @@
                     url: h_url + 'login/change_captcha',
                     success: function(data) {
                         flag3 = 0;
-                        $('#yzm').attr('src',data);
+                        $('#yzm').attr('src',data.cap_url);
                     }
                 });
             },

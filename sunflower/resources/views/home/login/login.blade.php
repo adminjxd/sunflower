@@ -51,7 +51,7 @@
             data:{},
             //请求成功后的回调函数有两个参数
             success: function(data) {
-                $('#yanzheng').attr('src',data);
+                $('#yanzheng').attr('src',data.cap_url);
             }
         });
 	})
@@ -157,7 +157,7 @@
 						            data:{},
 						            //请求成功后的回调函数有两个参数
 						            success: function(data) {
-						                $('#yanzheng').attr('src',data);
+						                $('#yanzheng').attr('src',data.cap_url);
 						            }
 						        });
 			                }

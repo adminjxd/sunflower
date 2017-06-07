@@ -80,19 +80,12 @@ class LoginController extends Controller
      */
     public function changeCaptcha()
     {
-        //接值
-        $cap_key = Input::get('cap_key');
-        //销毁原验证码信息
-        session()->forget("$cap_key");
-
 		$builder = new CaptchaBuilder;
 		$builder->build();
 		$captcha = $builder->inline();  //获取图形验证码的url
-        $value = $builder->getPhrase();
-        $key = time() . $value;
-        session(["$key" => $value]);
-		
-		return json_encode(['cap_url'=>$captcha,'cap_key'=>$key]);
+		session(['piccode' => $builder->getPhrase()]);
+
+		return json_encode(['cap_url'=>$captcha]);
 	}
 
     /**
@@ -136,7 +129,6 @@ class LoginController extends Controller
 
         curl_setopt_array($ch, $params); //传入curl参数
         $content = curl_exec($ch); //执行
-        // echo '<pre>';
         $info=json_decode($content,true); //输出登录结果
 
         $uid = $info['uid'];
@@ -158,15 +150,12 @@ class LoginController extends Controller
     public function bindUser(Request $request)
     {
         $uid = $request->input('uid');
-        // $uid = '123456';
         $builder = new CaptchaBuilder;
         $builder->build();
         $captcha = $builder->inline();  //获取图形验证码的url
         //将图形验证码的值写入到session中
-        $value = $builder->getPhrase();
-        $key = time() . $value;
-        session(["$key" => $value]);
-        return view('home/register/bind_user', ['captcha'=>$captcha,'cap_key'=>$key,'uid'=>$uid]);
+        session(['piccode' => $builder->getPhrase()]);
+        return view('home/register/bind_user', ['captcha'=>$captcha,'uid'=>$uid]);
     }
 
     //帐号绑定执行
@@ -177,12 +166,11 @@ class LoginController extends Controller
         $captcha = Input::get('captcha');
         $password = Input::get('password');
         $b_sign = Input::get('b_sign');
-        $cap_key = Input::get('cap_key');
         $uid = Input::get('uid');
         $ret = ['retCode' => '0', 'msg' => ''];
         //判断是绑定注册帐号还是已有帐号
         if ($b_sign == '1') {
-            $piccode = session("$cap_key");
+            $piccode = session('piccode');
             if ($captcha != $piccode) {
                 $ret['retCode'] = '3';
                 $ret['msg'] = '验证码错误';
@@ -235,7 +223,7 @@ class LoginController extends Controller
                 session()->forget("$phone");
             }
         } else {
-            $piccode = session("$cap_key");
+            $piccode = session('piccode');
             if ($captcha != $piccode) {
                 $ret['msg'] = '验证码错误';
                 return json_encode($ret);
@@ -271,7 +259,6 @@ class LoginController extends Controller
         //存储session
         $ret['retCode'] = 1;
         $ret['msg'] = '绑定成功';
-        session()->forget("$cap_key");
 
         return json_encode($ret);
     }
