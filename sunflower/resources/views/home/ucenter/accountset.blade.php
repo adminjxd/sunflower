@@ -203,9 +203,151 @@
 		</script>
     <style type="text/css">
 			.txt235{height:38px;border:1px solid #ccc;}
-		
+		  #div1{
+	    	display:none;
+	    	height: 100%;
+	    	width: 100%;
+	    	background:black;
+	    	position: absolute;
+	    	/*left: 50%;*/
+	    	/*top: 50%;*/
+	    	/*margin-left: -500px;*/
+	    	/*margin-top: -250px;*/
+	    	z-index: 1;
+	    	opacity: 0.1;
+	    }
+	    #div2{
+	    	display:none;
+	    	height: 200px;
+	    	width: 400px;
+	    	border:1px solid red;
+	    	background:white;
+	    	position: absolute;
+	    	left: 50%;
+	    	top: 50%;
+	    	margin-left: -200px;
+	    	margin-top: -100px;
+	    	z-index: 2;
+	    	opacity: 1;
+	    }
 		</style>
+		<div id="div1">
+	
+		</div>
+		<div id="div2">
+		<table cellspacing="0">
+			<tr bgcolor="red">
+				<th width=150 height=30 align="left">
+				<font color='white'>请填写真实信息：</font></th>
+				<th width=250 style="text-align:right;">
+				<input type="submit" onclick="close1()" style="cursor:hand;" value="×" >
+				<!--<button onclick="close1()" style="cursor:hand;">
+				×</button>-->
+				</th>
+			</tr>
+			<tr>
+				<td align="right" height=60>姓名：</td>
+				<td>
+				<input type="text" id="username"><span id="checkusername"></span>
+				</td>
+			</tr>
+			<tr>
+				<td align="right" height=30 valign="top">身份证：</td>
+				<td valign="top">
+				<input type="text" id="cordid"><span id="checknumber"></span>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center" valign="top">
+				<input type="button" id="getadd" value="提交">
+				<input type="button" value="取消" onclick="close1()">
+				</td>
+			</tr>
+		</table>
+		</div>
+		<script>
+			function lick(){
+				document.getElementById('div1').style.display="block";
+				document.getElementById('div2').style.display="block";
+			}
+			function close1(){
+				document.getElementById('div1').style.display="none";
+				document.getElementById('div2').style.display="none";
+			}
+		</script>
     <script type="text/javascript">
+		    var flag = false;
+				var flag1 = false; 
+         //姓名，身份证号验证
+				 $("#username").blur(function(){
+					 var reg = /^[\u4E00-\u9FA5]{2,4}$/;
+					 var username = $(this).val();
+					 if(username == "")
+					 {
+						 $("#checkusername").html("<font color='red'>不能为空</font>");
+					 }
+					 else
+					 {
+						 	  if(!reg.test(username))
+								{
+									$("#checkusername").html("<font color='red'>姓名为2-4个汉字</font>");
+								}
+								else
+								{
+										$("#checkusername").hide();
+										flag = true;
+								}
+					 }
+				 })
+         $("#cordid").blur(function(){
+					 var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|x)$)/; 
+					 var cordid = $(this).val();
+           if(cordid == "")
+					 {
+						 $("#checknumber").html("<font color='red'>不能为空</font>");
+					 }
+					 else
+					 {
+						 	 if(!reg.test(cordid))
+								{								 
+										$("#checknumber").html("<font color='red'>证件号错误</font>");
+								}
+								else
+								{								
+										$("#checknumber").hide();
+										flag1 = true;
+								}
+					 }
+				 })
+         $(document).on("click","#getadd",function(){
+					 var username = $("#username").val();
+					 var cordid = $("#cordid").val();
+					 if(flag == true && flag1 == true)
+					 {
+						 	 $.ajax({
+									type:"POST",
+									url:"{{asset('ucenter/authentication')}}",
+									data:{username:username,cordid:cordid},
+									dataType:"json",
+									success:function(data){
+										if(data.status == 1)
+										{
+												$("#div1").hide();
+												$("#div2").hide();
+												var str = '<i class="grzxbg p-danger"></i><span class="zhsz-span1">身份认证</span><span class="zhsz-span2">认证中</span><span class="zhsz-span3">待审核';
+												$("#cordnumber").html(str);
+										}else if(data.status == 2)
+										{
+												alert(data.message);
+										}
+										else if(data.status == 3)
+										{
+											alert(data.message);
+										}
+									}
+					     })
+					 }
+				 })
 			//<![CDATA[
 			$(function(){
 				var  type = getUrlParam();
@@ -259,11 +401,19 @@
         <h3><i>账户设置</i></h3>
         <div class="personal-level"> <span class="wzd">您的账户完整度</span><i class="grzxbg level3" style="border: none; margin: 37px 0px 0px 20px; height: 17px; background-position: 0px -550px;"></i><span class="state">[中]</span> <i id="zhwzd" class="markicon fl mt35"></i><span class="arrow-personal">请尽快完成账户安全设置，以确保您的账户安全</span><span class="grzxbg icon-personal"></span> </div>
         <ul>
-          <li><i class="grzxbg p-right"></i><span class="zhsz-span1">手机号</span><span class="zhsz-span2">150****0139</span><span class="zhsz-span3"><a href="javascript:void(0)" onclick="showSpan('alert-checkOldMobile')">更改</a></span></li>
+          <li><i class="grzxbg p-right"></i><span class="zhsz-span1">手机号</span><span class="zhsz-span2">{{$authentication['phone']}}</span><span class="zhsz-span3"><a href="javascript:void(0)" onclick="showSpan('alert-checkOldMobile')">更改</a></span></li>
           <input type="hidden" value="false" id="authenticationMobile">
-          <li><i class="grzxbg p-danger"></i><span class="zhsz-span1">身份认证</span><span class="zhsz-span2">未认证</span><span class="zhsz-span3"><a href="#">认证</a></span></li>
-          <li><i class="grzxbg p-danger"></i><span class="zhsz-span1">第三方支付</span><span class="zhsz-span2">未开通</span><span class="zhsz-span3"><a href="#">开通</a></span></li>
-          <li> <i class="grzxbg p-right"></i> <span class="zhsz-span1">电子邮箱</span> <span class="zhsz-span2">348****@qq.com</span> <span class="zhsz-span3"> <a href="#" onclick="showSpan('alert-updateEmail')">更改</a> </span> </li>
+          <li id="cordnumber">
+          <?php if($authentication['status'] == 0){ ?>
+					<i class="grzxbg p-danger"></i><span class="zhsz-span1">身份认证</span><span class="zhsz-span2">未认证</span><span class="zhsz-span3"><a href="javascript:void(0)" onclick="lick()" >认证</a>
+          <?php }else if($authentication['status'] == 1){ ?>
+          <i class="grzxbg p-right"></i><span class="zhsz-span1">身份认证</span><span class="zhsz-span2">{{$authentication['cardid']}}</span><span class="zhsz-span3">
+					<?php }else{ ?>
+					<i class="grzxbg p-danger"></i><span class="zhsz-span1">身份认证</span><span class="zhsz-span2">认证中</span><span class="zhsz-span3">待审核
+					<?php } ?>
+					</span></li>
+          <!--<li><i class="grzxbg p-danger"></i><span class="zhsz-span1">第三方支付</span><span class="zhsz-span2">未开通</span><span class="zhsz-span3"><a href="#">开通</a></span></li>-->
+          <li> <i class="grzxbg p-right"></i> <span class="zhsz-span1">电子邮箱</span> <span class="zhsz-span2">{{$authentication['email']}}</span> <span class="zhsz-span3"> <a href="#" onclick="showSpan('alert-updateEmail')">更改</a> </span> </li>
           <li><i class="grzxbg p-right"></i><span class="zhsz-span1">登录密码</span><span class="zhsz-span2"></span><span class="zhsz-span3"><a href="javascript:void(0)" onclick="showSpan('alert-updatePass')">更改</a></span></li>
         </ul>
       </div>
@@ -478,7 +628,7 @@
           <ul>
             <li>
               <label class="txt-name">原手机号</label>
-              <label id="checkOldMobileForm:oldMobileNumber" class="txt240"> 150****0139</label>
+              <label id="checkOldMobileForm:oldMobileNumber" class="txt240"> {{$phone}}</label>
             </li>
             <li>
               <label class="txt-name">验证码</label>
