@@ -54,7 +54,7 @@
           <span id="repeatPasswordAlt" data-info="请再次输入密码">请再次输入密码</span></li>
         <li> <span class="dis">验证码:</span>
           <input type="text" id="jpgVerify" class="input input1 _yanzhengma" name="yzm" maxlength="5" tabindex="1">
-          <img src="{{$captcha}}" alt="验证码" style="cursor:pointer;" id="yzm" class="valign" cap_key="{{$cap_key}}"> <a class="look blue _changeCapcherButton" id="look" href="javascript:void(0);" b_sign="1">看不清？换一张</a> <span class="info" id="jpgVerifys" data-info="请输入验证码"></span>
+          <img src="{{$captcha}}" alt="验证码" style="cursor:pointer;" id="yzm" class="valign"> <a class="look blue _changeCapcherButton" id="look" href="javascript:void(0);" b_sign="1">看不清？换一张</a> <span class="info" id="jpgVerifys" data-info="请输入验证码"></span>
         </li>
         <li class="telNumber"> <span class="dis">手机号码:</span>
           <input type="text" class="input _phoneNum" id="phone" name="phone" tabindex="1" maxlength="11">
@@ -82,7 +82,7 @@
         </li>
         <li>
           <span class="dis">验证码：</span><input type="text" id="b_captcha" style="width:166px;" class="input" name="yzm" data-msg="验证码" maxlength="5" tabindex="1" autocomplete="off">
-          <img src="{{$captcha}}" id="yanzheng" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;" class="valign" cap_key="{{$cap_key}}">
+          <img src="{{$captcha}}" id="yanzheng" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;" class="valign">
           <a class="_changeCapcherButton" href="javascript:void(0);" b_sign="2" id="look1">看不清？换一张</a>
           <span id="b_captcha_sign"></span>
         </li>

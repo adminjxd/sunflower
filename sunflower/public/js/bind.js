@@ -167,7 +167,6 @@
                             "username": $('#b_username').val(),
                             "password": $('#b_password').val(),
                             "captcha": $('#b_captcha').val(),
-                            "cap_key": $('#yanzheng').attr('cap_key'),
                             "b_sign": b_sign,
                             "uid": uid,
                         },
@@ -197,16 +196,11 @@
             captchaChange: function(event,b_sign) {
                 var yzm = $('#yzm');
                 var yanzheng = $('#yanzheng');
-                if (b_sign == '1') {
-                    var cap_key = yzm.attr('cap_key');
-                } else {
-                    var cap_key = yanzheng.attr('cap_key');
-                }
                 $.ajax({
                     type: "post",
                     dataType: "json",
                     url: h_url + 'login/change_captcha',
-                    data: {'cap_key':cap_key},
+                    data: {},
                     success: function(data) {
                         if (b_sign == '1') {
                             flag3 = 0;
@@ -215,7 +209,6 @@
                             var obj = yanzheng;
                         }
                         obj.attr('src',data.cap_url);
-                        obj.attr('cap_key',data.cap_key);
                     }
                 });
             },
@@ -376,10 +369,6 @@
                     $(ids + "s").append("<span style=color:#ff0000>验证码不能为空</span>");
                     return false;
                 }
-                var cap_key = '';
-                if (byName == 'jpgVerify') {
-                    cap_key = $('#yzm').attr('cap_key');
-                }
                 $.ajax({
                     type: "post",
                     dataType: "json",
@@ -389,7 +378,6 @@
                     data: {
                         verifyCode: $(ids).val(),
                         byName: byName,
-                        cap_key: cap_key,
                         phone: $("#phone").val(),
                     },
                     //请求成功后的回调函数有两个参数
@@ -485,7 +473,6 @@
                                 "captcha": $('#jpgVerify').val(),
                                 "phone": $("#phone").val(),
                                 "verifyCode":$("#phonVerify").val(),
-                                "cap_key": $('#yzm').attr('cap_key'),
                                 "b_sign": b_sign,
                                 "uid": uid,
                             },
@@ -497,17 +484,6 @@
                                 } else if (data.retCode == '3') {
                                     $('#look').trigger('click');
                                     flag3 = 0;
-                                    // $.ajax({
-                                    //   type: "post",
-                                    //   dataType: "json",
-                                    //   url: h_url + 'login/change_captcha', //发送请求地址
-                                    //   data: {'cap_key':$('#yzm').attr('cap_key')},
-                                    //   //请求成功后的回调函数有两个参数
-                                    //   success: function(data) {
-                                    //       $('#yzm').attr('src',data.cap_url);
-                                    //       $('#yzm').attr('cap_key',data.cap_key);
-                                    //   }
-                                    // });
                                 }
                             }
                         });
