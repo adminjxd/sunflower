@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Userprofile;
 use App\Models\Loan;
+use App\Models\Record;
+use App\Models\Overdue;
+use App\Models\Authentication;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 
@@ -41,9 +44,10 @@ class UcenterController extends Controller
 		//贷款记录
 		$loanInfo = Loan::join('type','loan_type','=','type_id')->select('loan_amount','type_name','loan_addtime','loan_period')->where('user_id','=',$user_id)->get()->toarray();
 		//还款记录
-		
-		//print_r($loanInfo);die;
-		return view('home/ucenter/myaccount',['userInfo' => $userInfo,'loanInfo'=>$loanInfo]);
+		$reloanInfo = Record::join('loan','record.loan_id','=','loan.loan_id')->join('type','loan.loan_type','=','type.type_id')->select('type_name','time','record.repayment_status','record.repayment_amount')->where('record.user_id','=',$user_id)->where('record.repayment_status','=',1)->get()->toarray();
+		//滞纳金
+		$overdueInfo = Overdue::where('user_id',$user_id)->get()->toarray();
+		return view('home/ucenter/myaccount',['userInfo' => $userInfo,'loanInfo'=>$loanInfo,'reloanInfo'=>$reloanInfo,'overdueInfo'=>$overdueInfo]);
 	}
 	/**
 	* @上传头像
@@ -233,6 +237,55 @@ class UcenterController extends Controller
 	 */
 	public function accountSet()
 	{
-		return view('home/ucenter/accountset');
+	    $user_info = session('userinfo');
+		if (empty($user_info)) {
+			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
+		}
+		$user_id = $user_info['id'];
+		$Authentication = Userprofile::select("phone","email","status","pay_pwd","cardid","real_name")->where('user_id','=',$user_id)->first()->toarray();
+		return view('home/ucenter/accountset',['authentication' =>$Authentication,'phone'=>$Authentication['phone']]);
+	}
+	/**
+	* @action: Account settings	身份认证
+	*
+	*/
+	public function authentication()
+	{		
+		$user_info = session('userinfo');
+		if (empty($user_info)) {
+			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
+		}
+		$user_id = $user_info['id'];
+		$username = $_POST['username'];
+		$cordid = $_POST['cordid'];
+		$data = [];
+		$Authenticationmsg = Authentication::where('username','=',$username)->where('idnumber','=',$cordid)->first();
+		if(!$Authenticationmsg == true)
+		{
+			$authenticationInfo = DB::table('authentication')->insert(['username' => $username, 'idnumber' => $cordid, 'user_id'=>$user_id]);
+			if($authenticationInfo == true)
+			{
+				$infomsg = DB::table('user_profile')->where('user_id', $user_id)->update(['status' => 2]);
+				if($infomsg == true)
+				{
+					$data['message'] = "认证信息已提交";
+					$data['status'] = 1;				
+				}
+			}		
+		}
+		else
+		{
+			if($Authenticationmsg['status'] == 1)
+			{
+				$data['message'] = "该身份已被使用";
+			    $data['status'] = 2;
+			}
+			else
+			{
+				$data['message'] = "该身份已被使用,审核中";
+			    $data['status'] = 3;
+			}
+		}
+		echo json_encode($data);die;
 	}
 }
