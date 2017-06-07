@@ -138,9 +138,11 @@
             <div class="pmain-morebtn" style="border-top:0;margin-top:0"></div>
           </div>
           <div class="pmain-conmain2" style=" display:none;">
-            <div class="pmain-contitle"> <span class="pmain-titledate">交易时间</span><span class="pmain-w100">交易类型</span><span class="pmain-w120">交易金额</span><span class="pmain-w120">余额</span><span class="pmain-w200">备注</span> </div>
+           <div class="pmain-contitle"> <span class="pmain-titledate">还款项</span><span class="pmain-titleproject">还款时间</span><span class="pmain-titletype">还款类型</span><span class="pmain-titlemoney">实际还款</span> </div>
             <ul style="float:left;">
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-w100">债权转让</span><span class="pmain-w120 pmain-money">10.00</span><span class="pmain-w120 pmain-money">10.00</span><span class="pmain-w200">备注</span></li>
+            <?php foreach($reloanInfo as $k=>$v): ?>
+              <li><span class="pmain-titledate"><?php echo $v['type_name'] ?></span><span class="pmain-titleproject"><?php echo date("Y-m-d H:i:s",$v['time']) ?></span><span class="pmain-titletype"><?php  if($v['repayment_status'] == 1){ ?> 已还款 <?php  }else{ ?> 未还款 <?php } ?></span><span class="pmain-titlemoney"><?php echo $v['repayment_amount'] ?></span></li>
+            <?php endforeach; ?>
               <!--<div style=" width:760px;height:200px;padding-top:100px; text-align:center;color:#d4d4d4; font-size:16px;">
 										 <img src="images/nondata.png" width="60" height="60"><br><br>
 										   暂无资金记录</div>-->
@@ -148,9 +150,11 @@
             <div class="pmain-morebtn" style="border-top:0;margin-top:0"></div>
           </div>
           <div class="pmain-conmain3" style=" display:none;">
-            <div class="pmain-contitle"> <span class="pmain-titledate">交易时间</span><span class="pmain-w210">项目</span><span class="pmain-w80">状态</span><span class="pmain-whb200">我的投资</span><span class="pmain-whb110">我的收益</span> </div>
+            <div class="pmain-contitle"> <span class="pmain-titledate">创建时间</span><span class="pmain-w210">还款状态</span><span class="pmain-w80">本月应还款</span><span class="pmain-whb200">超出时间(天)</span><span class="pmain-whb110">滞纳金额</span> </div>
             <ul style="float:left;">
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-w210">债权转让</span><span class="pmain-w80 pmain-money">10.00</span><span class="pmain-whb200 pmain-money">10.00</span><span class="pmain-whb110">备注</span></li>
+            <?php foreach($overdueInfo as $k=>$v): ?>
+              <li><span class="pmain-titledate"><?php echo  date("Y-m-d",$v['addtime']); ?></span><span class="pmain-w210"><?php if($v['status']==0){ ?>未还款 <?php }else{ ?> 已还款 <?php } ?></span><span class="pmain-w80 pmain-money"><?php echo $v['amount'] ?></span><span class="pmain-whb200 pmain-money"><?php echo $v['overtime'] ?>天</span><span class="pmain-whb110"><?php echo $v['overdue_amount'] ?></span></li>
+            <?php endforeach; ?>
               <!--	<div style=" width:760px;height:200px;padding-top:100px; text-align:center;color:#d4d4d4; font-size:16px;">
 										    <img src="images/nondata.png" width="60" height="60"><br><br>
 										   暂无投资记录</div>-->
