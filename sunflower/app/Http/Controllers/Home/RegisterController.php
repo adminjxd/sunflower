@@ -95,7 +95,7 @@ class RegisterController extends Controller
 	        //注册之后免登陆
 	        //session存储用户信息
 	        $user_info = [
-	        	'user_id' => $user_id,
+	        	'id' => $user_id,
 	        	'username' => $username,
 	        	'password' => md5($password),
 	        ];

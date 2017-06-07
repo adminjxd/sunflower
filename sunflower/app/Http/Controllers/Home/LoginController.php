@@ -8,6 +8,8 @@ use Gregwar\Captcha\CaptchaBuilder;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Oauth_user;
+use App\Models\Profile;
+// use Request;
 
 class LoginController extends Controller
 {
@@ -145,7 +147,7 @@ class LoginController extends Controller
         }
         else
         {
-            $user_info = User::where('id', '=', $info['user_id'] )->first();
+            $user_info = User::where('id', '=', $oauth_info['user_id'] )->first();
             // //存储session
             session(['userinfo' => $user_info->toArray()]);
             return redirect('index/index');
@@ -155,7 +157,8 @@ class LoginController extends Controller
     //帐号绑定
     public function bindUser(Request $request)
     {
-        // $uid = $request->input('uid');
+        $uid = $request->input('uid');
+        // $uid = '123456';
         $builder = new CaptchaBuilder;
         $builder->build();
         $captcha = $builder->inline();  //获取图形验证码的url
@@ -163,7 +166,7 @@ class LoginController extends Controller
         $value = $builder->getPhrase();
         $key = time() . $value;
         session(["$key" => $value]);
-        return view('home/register/bind_user', ['captcha'=>$captcha,'cap_key'=>$key]);
+        return view('home/register/bind_user', ['captcha'=>$captcha,'cap_key'=>$key,'uid'=>$uid]);
     }
 
     //帐号绑定执行
@@ -175,8 +178,7 @@ class LoginController extends Controller
         $password = Input::get('password');
         $b_sign = Input::get('b_sign');
         $cap_key = Input::get('cap_key');
-        // $uid = Input::get('uid');
-        $uid = '123456';
+        $uid = Input::get('uid');
         $ret = ['retCode' => '0', 'msg' => ''];
         //判断是绑定注册帐号还是已有帐号
         if ($b_sign == '1') {
@@ -196,8 +198,8 @@ class LoginController extends Controller
                 $code = $sess_phone['phonecode'];
                 $num = time() - $last_time;
                 //验证正确性及是否过期
-                if ($num > 60 || $code != $verifyCode) {
-                    $ret['msg'] = '验证码错误或已过期';
+                if ($num > 300 || $code != $verifyCode) {
+                    $ret['msg'] = '手机验证码错误或已过期';
                     return json_encode($ret);
                 }
             } else {
@@ -217,7 +219,7 @@ class LoginController extends Controller
                     'phone' => $phone,
                     'register_date' => date('Y-m-d H:i:s'),
                     'last_logintime' => date('Y-m-d H:i:s'),
-                    'last_ip' => Request::getClientIp(),
+                    'last_ip' => Oauth_user::getIp(),
                     'head' => 'images/touxiang.png',
                 ];
                 $res = Profile::insert($data);
@@ -225,7 +227,7 @@ class LoginController extends Controller
                 //注册之后免登陆
                 //session存储用户信息
                 $user_info = [
-                    'user_id' => $user_id,
+                    'id' => $user_id,
                     'username' => $username,
                     'password' => md5($password),
                 ];
@@ -236,17 +238,20 @@ class LoginController extends Controller
             $piccode = session("$cap_key");
             if ($captcha != $piccode) {
                 $ret['msg'] = '验证码错误';
+                return json_encode($ret);
             } else {
                 //验证帐号密码的正确性 
                 $res = User::where('username', '=', $username )->where('password', '=', md5($password))->first();
                 if (!$res) {
                     $ret['msg'] = '用户名密码错误';
+                    return json_encode($ret);
                 } else {
                     $user_id = $res['id'];
                     //检测该帐号是否绑定过
                     $oauth_info = Oauth_user::where('user_id', '=', $user_id )->first();
                     if ($oauth_info) {
                         $ret['msg'] = '该帐号已绑定';
+                        return json_encode($ret);
                     } else {
                         session(['userinfo' => $res->toArray()]);
                     }

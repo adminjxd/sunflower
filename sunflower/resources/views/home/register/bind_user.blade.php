@@ -65,7 +65,7 @@
         <li class="agree">
           <input name="protocol" id="protocol" type="checkbox" value="" checked="checked">
           我同意《<a href="#" target="_black">亿人宝注册协议</a>》 <span id="protocolAlt" data-info="请查看协议">请查看协议</span></li>
-        <li class="btn"><a href="javascript:void(0);" class="radius1 _ajaxSubmit">下一步</a></li>
+        <li class="btn"><a href="javascript:void(0);" class="radius1 _ajaxSubmit" b_sign="1">立即绑定</a></li>
       </ul>
     </div>
     <div class="registerCont" id='bind_p3' style="display:none;">
@@ -83,7 +83,7 @@
         <li>
           <span class="dis">验证码：</span><input type="text" id="b_captcha" style="width:166px;" class="input" name="yzm" data-msg="验证码" maxlength="5" tabindex="1" autocomplete="off">
           <img src="{{$captcha}}" id="yanzheng" alt="点击更换验证码" title="点击更换验证码" style="cursor:pointer;" class="valign" cap_key="{{$cap_key}}">
-          <a class="_changeCapcherButton" href="javascript:void(0);" b_sign="2">看不清？换一张</a>
+          <a class="_changeCapcherButton" href="javascript:void(0);" b_sign="2" id="look1">看不清？换一张</a>
           <span id="b_captcha_sign"></span>
         </li>
         <li class="btn">
@@ -93,6 +93,7 @@
     </div>
   </div>
   <input type="hidden" value="{{ URL::asset('')}}" id="h_url">
+  <input type="hidden" value="{{$uid}}" id="uid">
 </div>
 <script>
     $(document).on('click','.p1',function(){

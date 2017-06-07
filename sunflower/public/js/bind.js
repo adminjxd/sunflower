@@ -12,6 +12,7 @@
         var flag3 = 0;// 验证码验证状态1通过，0失败
         var isSuccess = false; //手机验证码是否发送标识
         var h_url = $('#h_url').val();//根目录地址
+        var uid = $('#uid').val();//第三方唯一标识
         //获取手机验证码
         var $getKey = $("._getkey");
         var $yanzhengma = $("._yanzhengma");//图片验证码
@@ -80,7 +81,8 @@
                 });
                 $("._ajaxSubmit").on('click', function(event) {
                     event.preventDefault();
-                    bind.ajaxSubmit();
+                    var b_sign = $(this).attr('b_sign');
+                    bind.ajaxSubmit(b_sign);
                     return false;
                 });
 
@@ -167,6 +169,7 @@
                             "captcha": $('#b_captcha').val(),
                             "cap_key": $('#yanzheng').attr('cap_key'),
                             "b_sign": b_sign,
+                            "uid": uid,
                         },
                         //请求成功后的回调函数有两个参数
                         success: function(data) {
@@ -174,17 +177,7 @@
                             if (data.retCode == '1') {
                               window.location = h_url + "index/index";
                             } else {
-                                $.ajax({
-                                  type: "post",
-                                  dataType: "json",
-                                  url: h_url + 'login/change_captcha', //发送请求地址
-                                  data: {'cap_key':$('#yanzheng').attr('cap_key')},
-                                  //请求成功后的回调函数有两个参数
-                                  success: function(data) {
-                                      $('#yanzheng').attr('src',data.cap_url);
-                                      $('#yanzheng').attr('cap_key',data.cap_key);
-                                  }
-                                });
+                                $('#look1').trigger('click');
                             }
                         }
                     });
@@ -427,7 +420,7 @@
                     }
                 });
             },
-            ajaxSubmit: function() {
+            ajaxSubmit: function(b_sign) {
                 var selectedItems = new Array();
                 $("input[name='protocol']:checked").each(function() {
                     selectedItems.push($(this).val());
@@ -494,6 +487,7 @@
                                 "verifyCode":$("#phonVerify").val(),
                                 "cap_key": $('#yzm').attr('cap_key'),
                                 "b_sign": b_sign,
+                                "uid": uid,
                             },
                             //请求成功后的回调函数有两个参数
                             success: function(data) {
@@ -534,11 +528,11 @@
                     }
                 }, 1000);
             },
-            _changetCapther: function() {
-                $changeCapcherButton.trigger('click');
-                flag3 = 0;
-                return false;
-            }
+            // _changetCapther: function() {
+            //     $changeCapcherButton.trigger('click');
+            //     flag3 = 0;
+            //     return false;
+            // }
         };
         bind.init();
     });
