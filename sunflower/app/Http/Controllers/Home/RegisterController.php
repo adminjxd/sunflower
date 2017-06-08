@@ -55,6 +55,7 @@ class RegisterController extends Controller
         $password = Input::get('password');
         $phone = Input::get('phone');
         $verifyCode = Input::get('verifyCode');
+        $pwdlevel = Input::get('pwdlevel');
         //构建返回数组
         $ret = ['retCode' => '0', 'msg' => ''];
         //验证手机验证码的有效性
@@ -80,7 +81,7 @@ class RegisterController extends Controller
         	$ret['msg'] = '用户名已被注册！';
         } else {
         	// 注册信息入库
-	        $user_id = User::insertGetId(['username'=>$username,'password'=>md5($password)]);
+	        $user_id = User::insertGetId(['username'=>$username,'password'=>md5($password),'phone'=>$phone,'pwdlevel'=>$pwdlevel]);
 	        $data = [
 	        	'user_id' => $user_id,
 	        	'phone' => $phone,
@@ -194,5 +195,4 @@ class RegisterController extends Controller
 
         return json_encode($ret);
 	}
-
 }
