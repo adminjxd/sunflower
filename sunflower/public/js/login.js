@@ -234,12 +234,12 @@
                         return false;
                     } else {
                         var level_msg = '';
-                        if(/^[0-9]{6,15}$/.test(strVal)){
+                        if(/^[0-9]*$|^[a-z]*$|^[A-Z]*$/.test(strVal)){
                             level_msg = '<font color=red>密码等级：弱</font>';
-                        } else if(/^[0-9a-z]{6,15}$/.test(strVal)){
+                        } else if(/^[0-9a-z]*$|^[0-9A-Z]*$|^[a-zA-Z]*$/.test(strVal)){
                             pwdlevel = 1;
                             level_msg = '<font color=orange>密码等级：中</font>';
-                        } else if(/^[0-9a-zA-Z]{6,15}$/.test(strVal)){
+                        } else if(/^[0-9a-zA-Z]*$/.test(strVal)){
                             pwdlevel = 2;
                             level_msg = '<font color=green>密码等级：强</font>';
                         }
