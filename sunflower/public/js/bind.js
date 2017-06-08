@@ -13,6 +13,7 @@
         var isSuccess = false; //手机验证码是否发送标识
         var h_url = $('#h_url').val();//根目录地址
         var uid = $('#uid').val();//第三方唯一标识
+        var pwdlevel = 0;//密码等级
         //获取手机验证码
         var $getKey = $("._getkey");
         var $yanzhengma = $("._yanzhengma");//图片验证码
@@ -339,8 +340,18 @@
                         $(ids).append("<span style=color:#ff7800>密码只能是数字和字母</span>");
                         return false;
                     } else {
+                        var level_msg = '';
+                        if(/^[0-9]{6,15}$/.test(strVal)){
+                            level_msg = '<font color=red>密码等级：弱</font>';
+                        } else if(/^[0-9a-z]{6,15}$/.test(strVal)){
+                            pwdlevel = 1;
+                            level_msg = '<font color=orange>密码等级：中</font>';
+                        } else if(/^[0-9a-zA-Z]{6,15}$/.test(strVal)){
+                            pwdlevel = 2;
+                            level_msg = '<font color=green>密码等级：强</font>';
+                        }
                         $(ids).text("");
-                        $(ids).append("<span style=color:green>填入信息可用</span>");
+                        $(ids).append("<span style=color:green>填入信息可用&nbsp;&nbsp;&nbsp;"+level_msg+"</span>");
                     }
                 }
                 //重复密码
@@ -475,6 +486,7 @@
                                 "verifyCode":$("#phonVerify").val(),
                                 "b_sign": b_sign,
                                 "uid": uid,
+                                'pwdlevel':pwdlevel,
                             },
                             //请求成功后的回调函数有两个参数
                             success: function(data) {

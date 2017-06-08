@@ -79,7 +79,8 @@ class loanController extends Controller
                 //替用户注册
                 $user = new User;
                 $user->username = $this->randName();
-                $user->password = $this->randName();
+                $user->password = md5('123456');
+                $user->phone = $post['phone'];
                 $user->save();
                 $profile = new Profile;
                 $profile->user_id = $user->id;

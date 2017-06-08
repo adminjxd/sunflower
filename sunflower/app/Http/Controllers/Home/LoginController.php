@@ -35,7 +35,7 @@ class LoginController extends Controller
      */
     public function loginCheck()
     {
-        //接值
+        // 接值
         $username = Input::get('username');
         $captcha = Input::get('captcha');
         $pwd = Input::get('password');
@@ -45,12 +45,18 @@ class LoginController extends Controller
         	$ret['msg'] = '验证码错误';
         } else {
 	        //验证帐号密码的正确性 
-	        $res = User::where('username', '=', $username )->where('password', '=', md5($pwd))->first();
+	        $res = User::where('username', '=', $username )->orWhere('phone', '=', $username )->orWhere('email', '=', $username )->where('password', '=', md5($pwd))->first();
 	        if (!$res) {
 	        	$ret['msg'] = '用户名密码错误，请重新登陆';
 	        } else {
+                $user_info = $res->toArray();
+                $profile_data = [
+                    'last_logintime' => date('Y-m-d H:i:s'),
+                    'last_ip' => Oauth_user::getIp(),
+                ];
+                Profile::where('user_id', '=', $user_info['id'])->update($profile_data);
 		        // //存储session
-		        session(['userinfo' => $res->toArray()]);
+		        session(['userinfo' => $user_info]);
 		        $ret['retCode'] = 1;
 	        }
         }
@@ -140,6 +146,11 @@ class LoginController extends Controller
         else
         {
             $user_info = User::where('id', '=', $oauth_info['user_id'] )->first();
+            $profile_data = [
+                'last_logintime' => date('Y-m-d H:i:s'),
+                'last_ip' => Oauth_user::getIp(),
+            ];
+            Profile::where('user_id', '=', $oauth_info['user_id'])->update($profile_data);
             // //存储session
             session(['userinfo' => $user_info->toArray()]);
             return redirect('index/index');
@@ -179,6 +190,7 @@ class LoginController extends Controller
             //接值
             $phone = Input::get('phone');
             $verifyCode = Input::get('verifyCode');
+            $pwdlevel = Input::get('pwdlevel');
             //验证手机验证码的有效性
             $sess_phone = session($phone);
             if (!empty($sess_phone)) {
@@ -201,7 +213,7 @@ class LoginController extends Controller
                 $ret['msg'] = '用户名已被注册！';
             } else {
                 // 注册信息入库
-                $user_id = User::insertGetId(['username'=>$username,'password'=>md5($password)]);
+                $user_id = User::insertGetId(['username'=>$username,'password'=>md5($password),'phone'=>$phone,'pwdlevel'=>$pwdlevel]);
                 $data = [
                     'user_id' => $user_id,
                     'phone' => $phone,
@@ -229,19 +241,26 @@ class LoginController extends Controller
                 return json_encode($ret);
             } else {
                 //验证帐号密码的正确性 
-                $res = User::where('username', '=', $username )->where('password', '=', md5($password))->first();
+                $res = User::where('username', '=', $username )->orWhere('phone', '=', $username )->orWhere('email', '=', $username )->where('password', '=', md5($pwd))->first();
                 if (!$res) {
                     $ret['msg'] = '用户名密码错误';
                     return json_encode($ret);
                 } else {
-                    $user_id = $res['id'];
+                    $user_info = $res->toArray();
+                    $user_id = $user_info['id'];
                     //检测该帐号是否绑定过
                     $oauth_info = Oauth_user::where('user_id', '=', $user_id )->first();
                     if ($oauth_info) {
                         $ret['msg'] = '该帐号已绑定';
                         return json_encode($ret);
                     } else {
-                        session(['userinfo' => $res->toArray()]);
+                        $profile_data = [
+                            'last_logintime' => date('Y-m-d H:i:s'),
+                            'last_ip' => Oauth_user::getIp(),
+                        ];
+                        Profile::where('user_id', '=', $user_id)->update($profile_data);
+                        // //存储session
+                        session(['userinfo' => $user_info]);
                     }
                 }
             }

@@ -10,7 +10,7 @@
 		<div class="registerCont">
 			<ul>
 				<li>
-					<span class="dis">用户名：</span><input class="input" type="text" name="username" id="username" maxlength="24" tabindex="1" autocomplete="off">
+					<span class="dis">用户名：</span><input class="input" type="text" name="username" id="username" maxlength="24" tabindex="1" autocomplete="off" placeholder="用户名/手机号/邮箱">
 					<span id="username_sign"></span>
 				</li>
 	                
