@@ -8,6 +8,7 @@ use App\Models\Userprofile;
 use App\Models\Loan;
 use App\Models\Record;
 use App\Models\Overdue;
+use App\Models\User;
 use App\Models\Authentication;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
@@ -204,7 +205,7 @@ class UcenterController extends Controller
 					$data['message'] = "提现申请已提交,预计2-3个工作日";
 					$data['status'] = 1;
 				}
-				print_r(json_encode($data));
+				return json_encode($data);
 			}
 		}
 	}
@@ -246,7 +247,7 @@ class UcenterController extends Controller
 		return view('home/ucenter/accountset',['authentication' =>$Authentication,'phone'=>$Authentication['phone']]);
 	}
 	/**
-	* @action: Account settings	身份认证
+	* @action: authentication	身份认证
 	*
 	*/
 	public function authentication()
@@ -286,6 +287,33 @@ class UcenterController extends Controller
 			    $data['status'] = 3;
 			}
 		}
-		echo json_encode($data);die;
+		return json_encode($data);
+	}
+
+	/**
+	* @action: updatePwd 修改密码
+	*
+	*/
+	public function updatePwd()
+	{
+		$oldpwd = Input::get('oldpwd');
+		$pwd = Input::get('pwd');
+		$pwdlevel = Input::get('pwdlevel');
+		$ret = ['retCode' => '0', 'msg' => '修改成功'];
+		$userinfo = session('userinfo');
+		if ($userinfo['password'] != md5($oldpwd)) {
+			$ret['msg'] = '原密码错误';
+		} else {
+			$user_data = [
+                'password' => md5($pwd),
+                'pwdlevel' => $pwdlevel,
+            ];
+			User::where('id', '=', $userinfo['id'])->update($user_data);
+			$userinfo['password'] = md5($pwd);
+			$userinfo['pwdlevel'] = $pwdlevel;
+			session(['userinfo' => $userinfo]);
+	        $ret['retCode'] = 1;
+		}
+		return json_encode($ret);
 	}
 }

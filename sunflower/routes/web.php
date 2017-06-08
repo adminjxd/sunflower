@@ -101,6 +101,10 @@ Route::get('ucenter/changehistory', ['uses'=>'Home\UcenterController@changehisto
 Route::get('ucenter/systeminfo', ['uses'=>'Home\UcenterController@systeminfo','as'=>'ucenter/systeminfo']);
 //账户设置
 Route::get('ucenter/accountset', ['uses'=>'Home\UcenterController@accountset','as'=>'ucenter/accountset']);
+//身份证验证
+Route::post('ucenter/authentication', ['uses'=>'Home\UcenterController@authentication','as'=>'ucenter/authentication']);
+//修改密码
+Route::post('ucenter/update_pwd', 'Home\UcenterController@updatePwd');
 
 
 //关于我们
@@ -202,6 +206,4 @@ Route::get('acrowd/category_list', 'Admin\CrowdfundingController@categoryList');
 Route::get('acrowd/add_category', 'Admin\CrowdfundingController@addCategory');
 Route::get('acrowd/projects_list', 'Admin\CrowdfundingController@projectsList');
 Route::get('acrowd/projects_order', 'Admin\CrowdfundingController@projectsOrder');
-//身份证验证
-Route::post('ucenter/authentication', ['uses'=>'Home\UcenterController@authentication','as'=>'ucenter/authentication']);
 
