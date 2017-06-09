@@ -105,6 +105,10 @@ Route::get('ucenter/accountset', ['uses'=>'Home\UcenterController@accountset','a
 Route::post('ucenter/authentication', ['uses'=>'Home\UcenterController@authentication','as'=>'ucenter/authentication']);
 //修改密码
 Route::post('ucenter/update_pwd', 'Home\UcenterController@updatePwd');
+//修改手机之发送短信
+Route::post('ucenter/phone_send', 'Home\UcenterController@phoneSend');
+//修改手机之短信验证
+Route::post('ucenter/check_phone_msg', 'Home\UcenterController@checkPhoneMsg');
 
 
 //关于我们
