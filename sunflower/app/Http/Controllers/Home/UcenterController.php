@@ -9,6 +9,7 @@ use App\Models\Loan;
 use App\Models\Record;
 use App\Models\Overdue;
 use App\Models\User;
+use App\Models\Deposit;
 use App\Models\Authentication;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
@@ -169,7 +170,40 @@ class UcenterController extends Controller
 		$user_id = $user_info['id'];
 		$userInfo = Userprofile::select('balance')->where('user_id','=',$user_id)->first()->toarray();
 		$userInfo = substr($userInfo['balance'],0,-1);
+
 		return view('home/ucenter/withdraw_deposit',['balance' => $userInfo]);
+	}
+
+	/*
+	* @action: Withdraw deposit	获取账户余额
+	*/
+	public function moneytype()
+	{
+		$user_info = session('userinfo');
+		if (empty($user_info)) {
+			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
+		}
+		$user_id = $user_info['id'];
+		// 1账户余额 2sun存宝余额
+		$moneytype = Input::get('type');
+		$data = [];
+		if($moneytype == 1)
+		{
+			$userInfo = Userprofile::select('balance')->where('user_id','=',$user_id)->first()->toarray();
+			//账户总金额
+			$countMoney = substr($userInfo['balance'],0,-1);
+			$data['status'] = 1;
+			$data['money'] = $countMoney;
+			print_r(json_encode($data));
+		}
+		else if($moneytype == 2)
+		{
+			$userInfo = Deposit::where('user_id', '=', $user_id)->first()->toarray();
+			$countMoney = $userInfo['total_money'];
+			$data['status'] = 1;
+			$data['money'] = $countMoney;
+			print_r(json_encode($data));
+		}
 	}
 	/**
 	* @action: Withdraw deposit	提现记录
@@ -181,32 +215,73 @@ class UcenterController extends Controller
 			return view('message',['msg'=>'请先登录','url'=>asset('login/login')]);
 		}
 		$user_id = $user_info['id'];
-		$userInfo = Userprofile::select('balance')->where('user_id','=',$user_id)->first()->toarray();
-		//账户总金额
-		$countMoney = substr($userInfo['balance'],0,-1);
-		//提现金额
-		$sumMoney = Input::get('actualMoney');
-		//实际到账金额
-		$ActualMoney = $sumMoney - ceil(($sumMoney*0.01)*100)/100;
-		//收款方账户
-		$account = Input::get('phone');
-		//创建时间
-		$newTime = date("Y-m-d H:i:s");
-		if($countMoney >= $sumMoney)
+		$moneytype = Input::get('type');
+		if($moneytype == 1)
 		{
-			$res = DB::table('alipay')->insert(['accounts' =>$account, 'create_time' =>$newTime ,'amount_money'=>$ActualMoney]);
-			if($res)
+			$userInfo = Userprofile::select('balance')->where('user_id','=',$user_id)->first()->toarray();
+			//账户总金额
+			$countMoney = substr($userInfo['balance'],0,-1);
+			//提现金额
+			$sumMoney = Input::get('actualMoney');
+			//实际到账金额
+			$ActualMoney = $sumMoney - ceil(($sumMoney*0.01)*100)/100;
+			//收款方账户
+			$account = Input::get('phone');
+			//创建时间
+			$newTime = date("Y-m-d H:i:s");
+			if($countMoney >= $sumMoney)
 			{
-				$money = $countMoney - $sumMoney;
-				$remoney = DB::table('user_profile')->where('user_id', $user_id)->update(['balance' => $money]);
-				$data = [];
-				if($remoney)
-				{
-					$data['message'] = "提现申请已提交,预计2-3个工作日";
-					$data['status'] = 1;
-				}
-				return json_encode($data);
+					$money = $countMoney - $sumMoney;
+					$remoney = DB::table('user_profile')->where('user_id', $user_id)->update(['balance' => $money]);
+					$data = [];
+					if($remoney)
+					{
+						$res = DB::table('alipay')->insert(['accounts' =>$account, 'create_time' =>$newTime ,'amount_money'=>$ActualMoney]);
+						$data['message'] = "提现申请已提交,预计2-3个工作日";
+						$data['status'] = 1;
+					}
+					return json_encode($data);
 			}
+		}
+		else if($moneytype == 2)
+		{
+			//sun账户总余额
+			$userInfo = Deposit::where('user_id', '=', $user_id)->first()->toarray();
+			$countMoney = $userInfo['total_money'];
+			//账户余额
+			$money = $userInfo['money'];
+			//利率金额
+			$earnings =$userInfo['earnings'];
+			//提现金额
+			$sumMoney = Input::get('actualMoney');
+			//实际到账金额
+			$ActualMoney = $sumMoney - ceil(($sumMoney*0.01)*100)/100;
+			//收款账户
+			$account = Input::get('phone');
+			//创建时间
+			$newTime = date("Y-m-d H:i:s");
+			$data = [];
+			if($sumMoney >$money )
+			{
+				$upcountMoney = $countMoney -$sumMoney;
+				$upMoney = $earnings-($countMoney - $sumMoney);
+				$remoney = DB::table('deposit')->where("user_id","=",$user_id)->update(['money' => 0,'total_money' => $upcountMoney,'earnings' =>$upMoney]);			  
+			}
+			else
+			{
+					//sun账户总余额
+					$upcountMoney = $countMoney - $sumMoney;
+					//账户余额
+					$upMoney = $money - $sumMoney;
+					$remoney = DB::table('deposit')->where("user_id","=",$user_id)->update(['money' => $upMoney,'total_money' => $upcountMoney]);
+			}
+			if($remoney)
+			{
+				$res = DB::table('alipay')->insert(['accounts' =>$account, 'create_time' =>$newTime ,'amount_money'=>$ActualMoney]);
+				$data['message'] = "提现申请已提交,预计2-3个工作日";
+				$data['status'] = 1;
+		    }
+			return json_encode($data);
 		}
 	}
 	/**
