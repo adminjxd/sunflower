@@ -180,12 +180,13 @@
 			//修改手机号-验证原手机号
 			$("#checkOldMobileForm\\:checkOldMobileFormauthCode_message").remove();
 			$("#checkOldMobileForm\\:checkOldMobileFormauthCode").val("");
-			
+
 			$("#updateMonbileForm\\:mobileNumber2").val(""); 
 			$("#updateMonbileForm\\:updateMonbileFormauthCode").val(""); 
 			$("#updateMonbileForm\\:mobileNumber2_message").remove();
 			$("#updateMonbileForm\\:updateMonbileFormauthCode_message").remove();
 			
+
 			$("#changeEmailForm\\:newEmail").val(""); 
 			$("#changeEmailForm\\:changeEmailFormauthCode").val(""); 
 			$("#changeEmailForm\\:newEmail_message").remove();
@@ -199,6 +200,15 @@
 			$("#updatePassForm\\:oldPassword_message").remove();
 			$("#updatePassForm\\:password_message").remove();
 			$("#repassword_message").remove();
+
+			//清除原手机号验证信息
+			$('#oldphone_code').val('');
+			$('#phoneJy').html('');
+			//清除新密码提示信息
+			$("#passwordErrorDiv").html('');
+			//清除新手机号验证信息
+			$("#newphone_code").val("");
+			$('#phoneJy1').html('');
 		}
 		//]]>
 	</script>
@@ -364,8 +374,7 @@
 			{
 				showSpan('alert-updateEmail');
 			}
-			//修改手机时，不显示原手机号
-			document.getElementById("updateMonbileForm:mobileNumber2").value = '';
+
 			//进度条样式
 			if($.browser.mozilla) 
 			{ 
@@ -400,13 +409,13 @@
         <h3><i>账户设置</i></h3>
         <div class="personal-level"> <span class="wzd">您的账户完整度</span><i class="grzxbg level3" style="border: none; margin: 37px 0px 0px 20px; height: 17px; background-position: 0px -550px;"></i><span class="state">[中]</span> <i id="zhwzd" class="markicon fl mt35"></i><span class="arrow-personal">请尽快完成账户安全设置，以确保您的账户安全</span><span class="grzxbg icon-personal"></span> </div>
         <ul>
-          <li><i class="grzxbg p-right"></i><span class="zhsz-span1">手机号</span><span class="zhsz-span2">{{$authentication['phone']}}</span><span class="zhsz-span3"><a href="javascript:void(0)" onclick="showSpan('alert-checkOldMobile')">更改</a></span></li>
+          <li><i class="grzxbg p-right"></i><span class="zhsz-span1">手机号</span><span class="zhsz-span2" id="sun_showphone">{{$authentication['phone']}}</span><span class="zhsz-span3"><a href="javascript:void(0)" onclick="showSpan('alert-checkOldMobile')">更改</a></span></li>
           <input type="hidden" value="false" id="authenticationMobile">
           <li id="cordnumber">
           <?php if($authentication['status'] == 0){ ?>
 				<i class="grzxbg p-danger"></i><span class="zhsz-span1">身份认证</span><span class="zhsz-span2">未认证</span><span class="zhsz-span3"><a href="javascript:void(0)" onclick="lick()" >认证</a>
           <?php }else if($authentication['status'] == 1){ ?>
-          <i class="grzxbg p-right"></i><span class="zhsz-span1">身份认证</span><span class="zhsz-span2">{{$authentication['cardid']}}</span><span class="zhsz-span3">
+          <i class="grzxbg p-right"></i><span class="zhsz-span1">身份认证</span><span class="zhsz-span2">{{$authentication['cardid']}}</span><span class="zhsz-span3"><font color=green>已认证</font>
 			<?php }else{ ?>
 			<i class="grzxbg p-danger"></i><span class="zhsz-span1">身份认证</span><span class="zhsz-span2">认证中</span><span class="zhsz-span3">待审核
 			<?php } ?>
@@ -627,25 +636,147 @@
           <ul>
             <li>
               <label class="txt-name">原手机号</label>
-              <label id="checkOldMobileForm:oldMobileNumber" class="txt240"> {{$phone}}</label>
+              <label id="sun_oldphone" class="txt240"> {{$phone}}</label>
             </li>
             <li>
               <label class="txt-name">验证码</label>
-              <input id="checkOldMobileForm:checkOldMobileFormauthCode" type="text" name="checkOldMobileForm:checkOldMobileFormauthCode" class="txt110" maxlength="8" onblur="jsf.util.chain(this,event,'return checkOldMobileFormAuthCode()','mojarra.ab(this,event,\'blur\',0,\'@this\')')" onfocus="clearValue(this)" placeholder="请输入验证码">
-              <span id="sendCode7"><a id="checkOldMobileForm:sendAuthCodeBtn" href="#" onclick="jsf.util.chain(this,event,'return validateModifyPhoneSMS(\'15055100139\');','PrimeFaces.ab({source:this,event:\'action\',process:\'checkOldMobileForm:sendAuthCodeBtn checkOldMobileForm:oldMobileNumber\',oncomplete:function(xhr,status,args){s7Code(xhr, status, args, \'dx\');}}, arguments[1]);');return false" class="btn-code">免费获取校验码</a><a id="checkOldMobileForm:sendAuthCodeBtn7" href="#" style="display:none;" onclick="mojarra.ab(this,event,'action','checkOldMobileForm:oldMobileNumber',0,{'onevent':sCode7()});return false" class="btn-code">免费获取校验码</a> </span> <span id="sendCodeGrey7" style="display:none;"> <a href="#" id="sendAuthCodeBtn7" class="btn-codeAfter" style="cursor:default;">免费获取校验码</a> </span>
-              <div id="checkOldMobileFormauthCodeErrorDiv" class="alert-error120"></div>
-              <div id="authCodeMsg" style="display:none;" class="yzmplace"> 验证码已发送到您手机<span id="mobileMsg"></span>，如果收不到短信，请 <a id="checkOldMobileForm:sendAuthCodeBtn3" href="#" style="color:blue;" onclick="PrimeFaces.ab({source:this,event:'action',process:'checkOldMobileForm:sendAuthCodeBtn3 checkOldMobileForm:oldMobileNumber',oncomplete:function(xhr,status,args){s7Code(xhr, status, args, 'yy');}}, arguments[1]);;return false">语音获取</a> </div>
-              <div id="authCodeMsg2" style="display:none;" class="yzmplace"> 您的手机<span id="mobileMsg2"></span>将在60秒内收到语音电话，请接听！ </div>
+              <input type="text" id="oldphone_code" name="checkOldMobileForm:checkOldMobileFormauthCode" class="txt110" maxlength="8" onfocus="clearValue(this)" placeholder="请输入验证码">
+              <span id="sendCode7"><a id="phonesend" href="javascript:void(0)" class="btn-code" phone_sign="0">免费获取校验码</a></span>
             </li>
-            <li><span class="txt-right" style="display:none;"><i class="error-icon"></i><i class="error-tip">验证码错误请重新输入</i></span><br>
-              <input type="submit" name="checkOldMobileForm:j_idt129" value="确 认" class="btn-ok txt-right" onclick="return checkCheckOldMobileAll()">
+            <li><span class="txt-right" id="phoneJy"></span><br>
+              <input type="button" name="checkOldMobileForm:j_idt129" value="确 认" class="btn-ok txt-right" id="sun_checkphone" phone_sign="0">
             </li>
           </ul>
-          <input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="6247899183375709698:8256389782682127070" autocomplete="off">
         </form>
       </div>
     </div>
-    <script type="text/javascript">
+<script type="text/javascript" src="{{ URL::asset('/js/jquery.min.js') }}"></script>
+    <script>
+    	// $(document).ready(function(){
+    	// 	var flag4 = 1;//是否发送验证码标识
+    	// 	var _t = 60; // 倒计时时间
+    	// 	var wait = 300;
+    	// 	var flaghave = 0;//倒计时标识
+    	// 	var isSuccess = false; //手机验证码是否发送标识
+	    //     var h_url = $('#h_url').val();
+	    //     var $getKey = $("#phonesend");
+	    //     var $phoneMsg = $('#phoneJy');//手机提示标签
+	    //     var checkdo = {
+	    //         init: function() {
+	    //             checkdo._bind();
+	    //         },
+	    //         _bind: function() {
+	    //         	//获取手机验证码
+	    //             $getKey.on('click', function(event) {
+	    //                 event.preventDefault();
+	    //                 if (flag4 == 1) {
+	    //                     flag4 = 0;
+	    //                     checkdo._ya($(this));
+	    //                 }
+	    //                 return false;
+	    //             });
+	    //             $("#check_oldphone").on('click', function(event) {
+	    //                 event.preventDefault();
+	    //                 checkdo.ajaxSubmit();
+	    //                 return false;
+	    //             });
+	    //         },
+	    //         //手机发送验证码
+	    //         _ya: function(o) {
+	    //             if (checkdo.phoneSend(o)) {
+	    //                 if (flaghave != "1") {
+	    //                     checkdo._daojishi();
+	    //                 }
+	    //             } else {
+	    //                 flag4 = 1;
+	    //             }
+	    //         },
+	    //         phoneSend: function(o) {
+	    //             $.ajax({
+	    //                 type: "post",
+	    //                 dataType: "json",
+	    //                 url: h_url + 'ucenter/phone_send',
+	    //                 async: false,
+	    //                 data: {
+	    //                     phone: $("#sun_oldphone").text(),
+	    //                 },
+	    //                 //请求成功后的回调函数有两个参数
+	    //                 success: function(data) {
+	    //                     flag4 = 1;
+	    //                     if(data['retCode'] == "0"){
+	    //                         flag4 = 0;
+	    //                         flaghave = 0;
+	    //                         isSuccess = true;
+	    //                         $phoneMsg.text("");
+	    //                         $phoneMsg.html("<span style=color:green>"+data['msg']+"</span>");
+	    //                     } else {
+	    //                         wait = 300;
+	    //                         flaghave = 1;
+	    //                         isSuccess = false;
+	    //                         $phoneMsg.text("");
+	    //                         $phoneMsg.html('<i class="error-icon"></i><i class="error-tip">'+data.msg+'</i>');
+	    //                     }
+	    //                 },
+	    //                 error: function(data, textStatus) {
+	    //                     flag4 = 1;
+	    //                 }
+	    //             });
+	    //             if (isSuccess) {
+	    //                 o.val("重新发送(" + wait + ")");
+	    //                 wait--;
+	    //                 return true;
+	    //             } else {
+	    //                 return false;
+	    //             }
+	    //         },
+	    //         _daojishi: function() {
+	    //             checkdo._setti(_t);
+	    //         },
+	    //         _setti: function(i) {
+	    //             setTimeout(function() {
+	    //                 if (i == 0) {
+	    //                     $getKey.html("获取验证码");
+	    //                     flag4 = 1;
+	    //                 } else {
+	    //                     $getKey.html("重新发送(" + i + ")");
+	    //                     checkdo._setti(parseInt(i - 1));
+	    //                 }
+	    //             }, 1000);
+	    //         },
+	    //         ajaxSubmit: function() {
+	    //         	var code = $('#oldphone_code').val();
+	    //         	var phone = $("#sun_oldphone").text();
+	    //             if (code == null || code == '') {
+	    //             	$phoneMsg.text("");
+     //                    $phoneMsg.html('<i class="error-icon"></i><i class="error-tip">验证码不能为空</i>');
+	    //             } else {
+	    //                 $.ajax({
+	    //                     type: "post",
+	    //                     dataType: "json",
+	    //                     url: h_url + 'ucenter/check_phone_msg',
+	    //                     data: {
+	    //                         "phone": phone,
+	    //                         "code": code,
+	    //                     },
+	    //                     //请求成功后的回调函数有两个参数
+	    //                     success: function(data) {
+	    //                     	if (data.retCode == '0') {
+	    //                     		alert(data.msg);
+	    //                     		displaySpan('alert-checkOldMobile');
+	    //                     		showSpan('alert-updateMobile')
+	    //                     	} else {
+	    //                     		$phoneMsg.text("");
+			  //                       $phoneMsg.html('<i class="error-icon"></i><i class="error-tip">'+data.msg+'</i>');
+	    //                     	}
+	    //                     }
+	    //                 });
+	    //             }
+	    //             return false;
+	    //         },
+	    //     };
+	    //     checkdo.init();
+	    // });
+    	
 		//<![CDATA[
         //验证手机号是否为空
         function checkUpdateMobileFormMoible()
@@ -730,26 +861,239 @@
           <ul>
             <li>
               <label class="txt-name">新手机号</label>
-              <input id="updateMonbileForm:mobileNumber2" type="text" name="updateMonbileForm:mobileNumber2" autocomplete="off" value="15055100139" class="txt240" maxlength="35" onblur="jsf.util.chain(this,event,'return checkUpdateMobileFormMoible()','mojarra.ab(this,event,\'blur\',0,0)')" placeholder="请输入手机号">
+              <input id="new_phone" type="text" name="updateMonbileForm:mobileNumber2" autocomplete="off" class="txt240" maxlength="11" placeholder="请输入手机号">
               <div id="mobileNumber2ErrorDiv" class="alert-error120"></div>
             </li>
             <li>
               <label class="txt-name">验证码</label>
-              <input id="updateMonbileForm:updateMonbileFormauthCode" type="text" name="updateMonbileForm:updateMonbileFormauthCode" class="txt110" maxlength="8" onblur="jsf.util.chain(this,event,'return checkUpdateMonbileFormAuthCode()','mojarra.ab(this,event,\'blur\',0,\'@this\')')" onfocus="clearValue(this)" placeholder="请输入验证码">
-              <span id="sendCode1"><a id="updateMonbileForm:sendAuthCodeBtn" href="#" onclick="PrimeFaces.ab({source:this,event:'action',process:'updateMonbileForm:sendAuthCodeBtn updateMonbileForm:mobileNumber2',oncomplete:function(xhr,status,args){s2Code(xhr, status, args, 'dx');}}, arguments[1]);;return false" class="btn-code">免费获取校验码</a><a id="updateMonbileForm:sendAuthCodeBtn5" href="#" style="display:none;" onclick="mojarra.ab(this,event,'action','updateMonbileForm:mobileNumber2',0,{'onevent':sCode4()});return false" class="btn-code">免费获取校验码</a> </span> <span id="sendCodeGrey1" style="display:none;"> <a href="#" id="sendAuthCodeBtn2" class="btn-codeAfter" style="cursor:default;">免费获取校验码</a> </span>
+              <input id="newphone_code" type="text" name="updateMonbileForm:updateMonbileFormauthCode" class="txt110" maxlength="8" onfocus="clearValue(this)" placeholder="请输入验证码">
+              <span id="sendCode1"><a id="phonesend1" href="javascript:void(0)" class="btn-code" phone_sign="1">免费获取校验码</a></span>
               <div id="updateMonbileFormauthCodeErrorDiv" class="alert-error120"></div>
-              <div id="authCodeMsg3" style="display:none;" class="yzmplace"> 验证码已发送到您手机<span id="mobileMsg3"></span>，如果收不到短信，请 <a id="updateMonbileForm:sendAuthCodeBtn9" href="#" style="color:blue;" onclick="PrimeFaces.ab({source:this,event:'action',process:'updateMonbileForm:sendAuthCodeBtn9 updateMonbileForm:mobileNumber2',oncomplete:function(xhr,status,args){s2Code(xhr, status, args, 'yy');}}, arguments[1]);;return false">语音获取</a> </div>
-              <div id="authCodeMsg4" style="display:none;" class="yzmplace"> 您的手机<span id="mobileMsg4"></span>将在60秒内收到语音电话，请接听！ </div>
             </li>
-            <li><span class="txt-right" style="display:none;"><i class="error-icon"></i><i class="error-tip">验证码错误请重新输入</i></span>
-              <input type="submit" name="updateMonbileForm:j_idt139" value="确 认" class="btn-ok txt-right" onclick="return updateMobileAll()">
+            <li><span class="txt-right" id="phoneJy1"></span>
+              <input type="button" name="updateMonbileForm:j_idt139" value="确 认" class="btn-ok txt-right" id="sun_checkphone1" phone_sign="1">
             </li>
           </ul>
-          <input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="6247899183375709698:8256389782682127070" autocomplete="off">
         </form>
       </div>
     </div>
     <script type="text/javascript">
+    	$(document).ready(function(){
+    		var flag3 = 1;//验证旧手机是否发送验证码标识
+    		var flag4 = 1;//验证新手机是否发送验证码标识
+    		var _t = 60; // 倒计时时间
+    		var wait = 300;
+    		var flaghave = 0;//倒计时标识
+    		var flaghave1 = 0;//新手机倒计时标识
+	        var h_url = $('#h_url').val();
+	        var flag = 1;//手机号验证
+	        var upphone = {
+	            init: function() {
+	                upphone._bind();
+	            },
+	            _bind: function() {
+	            	//旧号码获取手机验证码
+	                $("#phonesend").on('click', function(event) {
+	                    event.preventDefault();
+	                    var phone_sign = $(this).attr('phone_sign');
+                    	if (flag3 == 1) {
+	                        flag3 = 0;
+	                        upphone._ya($(this),phone_sign);
+	                    }
+	                    return false;
+	                });
+	            	//新号码获取手机验证码
+	                $("#phonesend1").on('click', function(event) {
+	                    event.preventDefault();
+	                    var phone_sign = $(this).attr('phone_sign');
+                    	if (flag4 == 1) {
+	                        flag4 = 0;
+	                        upphone._ya($(this),phone_sign);
+	                    }
+	                    return false;
+	                });
+
+	                $("#sun_checkphone").on('click', function(event) {
+	                    event.preventDefault();
+	                    upphone.ajaxSubmit($(this));
+	                    return false;
+	                });
+	                $("#sun_checkphone1").on('click', function(event) {
+	                    event.preventDefault();
+	                    upphone.ajaxSubmit($(this));
+	                    return false;
+	                });
+	                //手机号验证
+	                $("#new_phone").on('blur keyup', function(event) {
+	                    event.preventDefault();
+	                    upphone.phoneYz();
+	                    return false;
+	                });
+	            },
+	            phoneYz: function() { // 手机号验证
+	            	var $phoneMsg = $('#phoneJy1');
+	                var utel = $("#new_phone");
+	                var str = utel.val();
+	                var old_phone = parseInt($("#sun_oldphone").text());
+	                var regPartton = /^1[3-9]\d{9}$/;
+	                if (!str || str == null) {
+	                    $phoneMsg.text("");
+	                    $phoneMsg.append('<i class="error-icon"></i><i class="error-tip">手机号不可为空</i>');
+	                    return false;
+	                } else if (!regPartton.test(str)) {
+	                    $phoneMsg.text("");
+	                    $phoneMsg.append('<i class="error-icon"></i><i class="error-tip">手机号格式不正确</i>');
+	                    return false;
+	                } else if (parseInt(str)==old_phone) {
+	                	$phoneMsg.text("");
+	                    $phoneMsg.append('<i class="error-icon"></i><i class="error-tip">新手机号与原手机号相同</i>');
+	                    return false;
+	                } else {
+	                    $phoneMsg.text("");
+	                    flag = 0;
+	                    return true;
+	                }
+	            },
+	            //手机发送验证码
+	            _ya: function(o,phone_sign) {
+	                if (upphone.phoneSend(o,phone_sign)) {
+	                    if (flaghave != "1") {
+	                        upphone._daojishi(o);
+	                    }
+	                } else {
+	                    flag4 = 1;
+	                }
+	            },
+	            phoneSend: function(o,phone_sign) {
+	            	var isSuccess = false;
+	            	if(phone_sign==0){
+	            		var phone = $("#sun_oldphone").text();
+	            		var $phoneMsg = $('#phoneJy');
+	            	} else {
+		            	var phone = $("#new_phone").val();
+		            	var $phoneMsg = $('#phoneJy1');
+	            	}
+	                $.ajax({
+	                    type: "post",
+	                    dataType: "json",
+	                    url: h_url + 'ucenter/phone_send',
+	                    async: false,
+	                    data: {
+	                        'phone': phone,
+	                    },
+	                    //请求成功后的回调函数有两个参数
+	                    success: function(data) {
+	                        flag3 = 1;
+	                        flag4 = 1;
+	                        if(data['retCode'] == "0"){
+	                        	if(phone_sign==0){
+		                            flag3 = 0;
+		                            flaghave = 0;
+	                        	} else {
+		                            flag4 = 0;
+	                        		flaghave1 = 0;
+	                        	}
+	                            isSuccess = true;
+	                            $phoneMsg.text("");
+	                            $phoneMsg.html("<span style=color:green>"+data['msg']+"</span>");
+	                        } else {
+	                            wait = 300;
+	                            if(phone_sign==0){
+		                            flaghave = 0;
+	                        	} else {
+	                        		flaghave1 = 0;
+	                        	}
+	                            isSuccess = false;
+	                            $phoneMsg.text("");
+	                            $phoneMsg.html('<i class="error-icon"></i><i class="error-tip">'+data.msg+'</i>');
+	                        }
+	                    },
+	                    error: function(data, textStatus) {
+	                    	if(phone_sign==0){
+	                            flag3 = 1;
+                        	} else {
+	                            flag4 = 1;
+                        	}
+	                    }
+	                });
+	                if (isSuccess) {
+	                    o.val("重新发送(" + wait + ")");
+	                    wait--;
+	                    return true;
+	                } else {
+	                    return false;
+	                }
+	            },
+	            _daojishi: function(ob) {
+	            	
+	                upphone._setti(_t,ob);
+	            },
+	            _setti: function(i,obj) {
+	                setTimeout(function() {
+	                    if (i == 0) {
+	                        obj.html("获取验证码");
+	                        flag3 = 1;
+	                        flag4 = 1;
+	                    } else {
+	                        obj.html("重新发送(" + i + ")");
+	                        upphone._setti(parseInt(i - 1),obj);
+	                    }
+	                }, 1000);
+	            },
+	            ajaxSubmit: function(obj) {
+	            	var phone_sign = obj.attr('phone_sign');
+	            	if(phone_sign==0) {
+	            		var code = $('#oldphone_code').val();
+		            	var phone = $("#sun_oldphone").text();
+		            	var $phoneMsg = $('#phoneJy');
+	            	} else {
+		            	var code = $('#newphone_code').val();
+		            	var phone = $("#new_phone").val();
+		            	var $phoneMsg = $('#phoneJy1');
+		            	if (flag) {
+		            		$phoneMsg.text("");
+	                        $phoneMsg.html('<i class="error-icon"></i><i class="error-tip">手机号错误</i>');
+	                        return false;
+		            	}
+	            	}
+	                if (code == null || code == '') {
+	                	$phoneMsg.text("");
+                        $phoneMsg.html('<i class="error-icon"></i><i class="error-tip">验证码不能为空</i>');
+	                } else {
+	                    $.ajax({
+	                        type: "post",
+	                        dataType: "json",
+	                        url: h_url + 'ucenter/check_phone_msg',
+	                        data: {
+	                            "phone": phone,
+	                            "code": code,
+	                            "phone_sign": phone_sign,
+	                        },
+	                        //请求成功后的回调函数有两个参数
+	                        success: function(data) {
+	                        	if (data.retCode == '0') {
+	                        		if(phone_sign==0) {
+	                        			alert(data.msg);
+		                        		displaySpan('alert-checkOldMobile');
+		                        		showSpan('alert-updateMobile');
+	                        		}else{
+		                        		alert(data.msg+'，手机号已修改');
+		                        		displaySpan('alert-updateMobile');
+		                        		$("#sun_oldphone").text(phone);
+		                        		$("#sun_showphone").text(phone);
+	                        		}
+	                        	} else {
+	                        		$phoneMsg.text("");
+			                        $phoneMsg.html('<i class="error-icon"></i><i class="error-tip">'+data.msg+'</i>');
+	                        	}
+	                        }
+	                    });
+	                }
+	                return false;
+	            },
+	        };
+	        upphone.init();
+	    });
 	//<![CDATA[
            //验证手机号是否为空
            function checkchangeEmailFormNewEmail()
@@ -1277,7 +1621,6 @@
 	        }
 		}
 
-		
 		var second = 0;
         var internal;
         /** 校验修改手机验证码 */
@@ -1288,38 +1631,36 @@
 			}
 			var returnResult = false;
 			$.ajax({
-				   url: "/valiSms",
-				   async:false,
-				   data:{
-						mobileNumber:mobileNumber
-				   },
-				   success: function(data){
-					   if(data.flag == 'NO'){
-						   $("#checkOldMobileForm\\:checkOldMobileFormauthCode_message").remove();
-						   var $span = $("<span id=checkOldMobileForm\:checkOldMobileFormauthCode_message class=alerterror>点击过于频繁,请<b>"+data.second+"</b>秒后重试</span>");
-				   		   $("#checkOldMobileFormauthCodeErrorDiv").append($span);
-						   second = data.second;
-						   clearInterval(internal);
-						   internal = setInterval(function(){
-                              if(second == 0){
-                            	  $("#checkOldMobileForm\\:checkOldMobileFormauthCode_message").remove();
-                              }else{
-                            	  second = second -1;
-                            	  $("#checkOldMobileForm\\:checkOldMobileFormauthCode_message").find('b').html(second);
-                              }
-						   },1000);
-						   returnResult = false;
-					   }else if(data.flag == 'NO1'){
-						   $("#checkOldMobileForm\\:checkOldMobileFormauthCode_message").remove();
-						   var $span = $("<span id=checkOldMobileForm\:checkOldMobileFormauthCode_message class=alerterror>"+data.smsVali+"</span>");
-				   		   $("#checkOldMobileFormauthCodeErrorDiv").append($span);
-						   returnResult = false;
-					   }else{
-						   returnResult = true;
-					   }
-				   }
-			    });
-               return returnResult;
+			    url: "/valiSms",
+			    async:false,
+			    data:{'phone':mobileNumber},
+			    success: function(data){
+				    if(data.flag == 'NO'){
+					   $("#checkOldMobileForm\\:checkOldMobileFormauthCode_message").remove();
+					   var $span = $("<span id=checkOldMobileForm\:checkOldMobileFormauthCode_message class=alerterror>点击过于频繁,请<b>"+data.second+"</b>秒后重试</span>");
+			   		   $("#checkOldMobileFormauthCodeErrorDiv").append($span);
+					   second = data.second;
+					   clearInterval(internal);
+					   internal = setInterval(function(){
+                          if(second == 0){
+                        	  $("#checkOldMobileForm\\:checkOldMobileFormauthCode_message").remove();
+                          }else{
+                        	  second = second -1;
+                        	  $("#checkOldMobileForm\\:checkOldMobileFormauthCode_message").find('b').html(second);
+                          }
+					   },1000);
+					   returnResult = false;
+				    }else if(data.flag == 'NO1'){
+					   $("#checkOldMobileForm\\:checkOldMobileFormauthCode_message").remove();
+					   var $span = $("<span id=checkOldMobileForm\:checkOldMobileFormauthCode_message class=alerterror>"+data.smsVali+"</span>");
+			   		   $("#checkOldMobileFormauthCodeErrorDiv").append($span);
+					   returnResult = false;
+				    }else{
+					   returnResult = true;
+				    }
+			    }
+		    });
+            return returnResult;
 		}
 
 		 /** 校验修改邮箱验证码 */

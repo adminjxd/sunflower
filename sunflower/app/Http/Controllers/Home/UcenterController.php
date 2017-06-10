@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Userprofile;
+use App\Models\Profile;
 use App\Models\Loan;
 use App\Models\Record;
 use App\Models\Overdue;
@@ -13,7 +14,7 @@ use App\Models\Deposit;
 use App\Models\Authentication;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\REST;
 
 class UcenterController extends Controller
 {
@@ -376,9 +377,11 @@ class UcenterController extends Controller
 		$pwdlevel = Input::get('pwdlevel');
 		$ret = ['retCode' => '0', 'msg' => '修改成功'];
 		$userinfo = session('userinfo');
+		//验证原密码是否正确
 		if ($userinfo['password'] != md5($oldpwd)) {
 			$ret['msg'] = '原密码错误';
 		} else {
+			//修改密码
 			$user_data = [
                 'password' => md5($pwd),
                 'pwdlevel' => $pwdlevel,
@@ -390,5 +393,87 @@ class UcenterController extends Controller
 	        $ret['retCode'] = 1;
 		}
 		return json_encode($ret);
+	}
+
+	/**
+	* @action: phoneSend 发送短信
+	*
+	*/
+	public function phoneSend()
+	{
+		$phone = Input::get('phone');
+        $ret = ['retCode' => '0', 'msg' => '短信发送成功'];
+        // return json_encode($ret);
+    	$time = time();
+    	// 检测发短信间隔是否在一分钟内
+        $phonecode = session($phone);
+        if (!empty($phonecode)) {
+        	$last_time = $phonecode['send_time'];
+        	$num = $time - $last_time;
+        	if ($num <= 60) {
+        		$ret['retCode'] = 3;
+	        	$ret['msg'] = '一分钟之内只能发送一次验证码';
+        		return json_encode($ret);
+        	}
+        }
+
+        //生成随机验证码
+        $p_code = rand(100000, 999999);
+        //构建短信发送数组，由验证码和时间(min)组成
+		$datas = ["$p_code",'5'];
+		// 初始化REST SDK
+	    $rest = new REST();
+	    // 发送模板短信
+	    $result = $rest->sendTemplateSMS($phone,$datas);
+	    if ($result['statusCode'] != 0 || $result == NULL ) {
+	    	$ret['retCode'] = '2';
+        	$ret['msg'] = '发生异常，请联系管理员或稍候再试！';
+	    } else {
+	    	//构建手机验证码的SESSION存储数据
+			$data = ['phonecode' => $p_code, 'send_time' =>$time];
+	        //手机验证码存session
+	        session(["$phone" => $data]);
+	    }
+
+        return json_encode($ret);
+	}
+
+	/**
+	* @action: checkPhoneMsg 短信验证
+	*
+	*/
+	public function checkPhoneMsg()
+	{
+		$phone = Input::get('phone');
+		$code = Input::get('code');
+		$phone_sign = Input::get('phone_sign');
+    	$ses = session("$phone");
+    	$phonecode = $ses['phonecode'];
+    	$ret = ['retCode' => '0', 'msg' => '验证成功'];
+    	// 检测验证码是否过期
+    	$num = time() - $ses['send_time'];
+    	// return json_encode($ret);
+    	if ($num > 300) {
+    		$ret['retCode'] = 1;
+        	$ret['msg'] = '验证码已过期，请重新发送';
+        	return json_encode($ret);
+    	}
+    	//检测验证码是否正确
+        if ($code != $phonecode) {
+        	$ret['retCode'] = 1;
+        	$ret['msg'] = '验证码错误';
+        }
+
+        //判断是否是新手机号操作
+        if ($phone_sign == 1) {
+        	$userinfo = session('userinfo');
+        	User::where('id', '=', $userinfo['id'])->update(['phone'=>$phone]);
+        	profile::where('user_id', '=', $userinfo['id'])->update(['phone'=>$phone]);
+        	$userinfo['phone'] = $phone;
+        	session(['userinfo' => $userinfo]);
+        }
+
+        session()->forget("$phone");
+        return json_encode($ret);
 	}
 }

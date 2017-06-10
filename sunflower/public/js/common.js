@@ -109,9 +109,10 @@ $(function(){
 		})
 	}
 })(jQuery);
-$(function(){
-	$('[placeholder]').placeholder();  
- });
+
+// $(function(){
+// 	$('[placeholder]').placeholder();  
+//  });
  
  
 //图片滚动插件 
