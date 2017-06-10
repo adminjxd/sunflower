@@ -202,10 +202,13 @@
 			$("#repassword_message").remove();
 
 			//清除原手机号验证信息
-			$('#phoneJy').html('');
 			$('#oldphone_code').val('');
+			$('#phoneJy').html('');
 			//清除新密码提示信息
 			$("#passwordErrorDiv").html('');
+			//清除新手机号验证信息
+			$("#newphone_code").val("");
+			$('#phoneJy1').html('');
 		}
 		//]]>
 	</script>
@@ -406,7 +409,7 @@
         <h3><i>账户设置</i></h3>
         <div class="personal-level"> <span class="wzd">您的账户完整度</span><i class="grzxbg level3" style="border: none; margin: 37px 0px 0px 20px; height: 17px; background-position: 0px -550px;"></i><span class="state">[中]</span> <i id="zhwzd" class="markicon fl mt35"></i><span class="arrow-personal">请尽快完成账户安全设置，以确保您的账户安全</span><span class="grzxbg icon-personal"></span> </div>
         <ul>
-          <li><i class="grzxbg p-right"></i><span class="zhsz-span1">手机号</span><span class="zhsz-span2">{{$authentication['phone']}}</span><span class="zhsz-span3"><a href="javascript:void(0)" onclick="showSpan('alert-checkOldMobile')">更改</a></span></li>
+          <li><i class="grzxbg p-right"></i><span class="zhsz-span1">手机号</span><span class="zhsz-span2" id="sun_showphone">{{$authentication['phone']}}</span><span class="zhsz-span3"><a href="javascript:void(0)" onclick="showSpan('alert-checkOldMobile')">更改</a></span></li>
           <input type="hidden" value="false" id="authenticationMobile">
           <li id="cordnumber">
           <?php if($authentication['status'] == 0){ ?>
@@ -848,7 +851,7 @@
         }
 		//]]>
 	</script>
-    <div class="alert-450" id="alert-updateMobile" style="#display:none;">
+    <div class="alert-450" id="alert-updateMobile" style="display:none;">
       <div class="alert-title">
         <h3>修改手机</h3>
         <span class="alert-close" onclick="displaySpan('alert-updateMobile')"></span></div>
@@ -868,7 +871,7 @@
               <div id="updateMonbileFormauthCodeErrorDiv" class="alert-error120"></div>
             </li>
             <li><span class="txt-right" id="phoneJy1"></span>
-              <input type="button" name="updateMonbileForm:j_idt139" value="确 认" class="btn-ok txt-right" id="sun_checkphone" phone_sign="1">
+              <input type="button" name="updateMonbileForm:j_idt139" value="确 认" class="btn-ok txt-right" id="sun_checkphone1" phone_sign="1">
             </li>
           </ul>
         </form>
@@ -882,8 +885,6 @@
     		var wait = 300;
     		var flaghave = 0;//倒计时标识
     		var flaghave1 = 0;//新手机倒计时标识
-    		// var isSuccess = false; //手机验证码是否发送标识
-    		var isSuccess1 = false; //新手机验证码是否发送标识
 	        var h_url = $('#h_url').val();
 	        var flag = 1;//手机号验证
 	        var upphone = {
@@ -913,6 +914,11 @@
 	                });
 
 	                $("#sun_checkphone").on('click', function(event) {
+	                    event.preventDefault();
+	                    upphone.ajaxSubmit($(this));
+	                    return false;
+	                });
+	                $("#sun_checkphone1").on('click', function(event) {
 	                    event.preventDefault();
 	                    upphone.ajaxSubmit($(this));
 	                    return false;
@@ -1026,6 +1032,7 @@
 	                setTimeout(function() {
 	                    if (i == 0) {
 	                        obj.html("获取验证码");
+	                        flag3 = 1;
 	                        flag4 = 1;
 	                    } else {
 	                        obj.html("重新发送(" + i + ")");
@@ -1035,8 +1042,6 @@
 	            },
 	            ajaxSubmit: function(obj) {
 	            	var phone_sign = obj.attr('phone_sign');
-	            	alert(phone_sign);
-	            	return;
 	            	if(phone_sign==0) {
 	            		var code = $('#oldphone_code').val();
 		            	var phone = $("#sun_oldphone").text();
@@ -1074,6 +1079,8 @@
 	                        		}else{
 		                        		alert(data.msg+'，手机号已修改');
 		                        		displaySpan('alert-updateMobile');
+		                        		$("#sun_oldphone").text(phone);
+		                        		$("#sun_showphone").text(phone);
 	                        		}
 	                        	} else {
 	                        		$phoneMsg.text("");

@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Userprofile;
+use App\Models\Profile;
 use App\Models\Loan;
 use App\Models\Record;
 use App\Models\Overdue;
@@ -327,7 +328,7 @@ class UcenterController extends Controller
 	{
 		$phone = Input::get('phone');
         $ret = ['retCode' => '0', 'msg' => '短信发送成功'];
-        return json_encode($ret);
+        // return json_encode($ret);
     	$time = time();
     	// 检测发短信间隔是否在一分钟内
         $phonecode = session($phone);
@@ -376,7 +377,7 @@ class UcenterController extends Controller
     	$ret = ['retCode' => '0', 'msg' => '验证成功'];
     	// 检测验证码是否过期
     	$num = time() - $ses['send_time'];
-    	return json_encode($ret);
+    	// return json_encode($ret);
     	if ($num > 300) {
     		$ret['retCode'] = 1;
         	$ret['msg'] = '验证码已过期，请重新发送';
@@ -387,8 +388,17 @@ class UcenterController extends Controller
         	$ret['retCode'] = 1;
         	$ret['msg'] = '验证码错误';
         }
-        // session()->forget("$phone");
 
+        //判断是否是新手机号操作
+        if ($phone_sign == 1) {
+        	$userinfo = session('userinfo');
+        	User::where('id', '=', $userinfo['id'])->update(['phone'=>$phone]);
+        	profile::where('user_id', '=', $userinfo['id'])->update(['phone'=>$phone]);
+        	$userinfo['phone'] = $phone;
+        	session(['userinfo' => $userinfo]);
+        }
+
+        session()->forget("$phone");
         return json_encode($ret);
 	}
 }
