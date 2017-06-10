@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Home;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\Userprofile;
+
+
 use App\Models\Profile;
 use App\Models\Loan;
 use App\Models\Record;
@@ -12,9 +11,16 @@ use App\Models\Overdue;
 use App\Models\User;
 use App\Models\Deposit;
 use App\Models\Authentication;
-use Illuminate\Support\Facades\Input;
+
 use Illuminate\Support\Facades\Log;
 use App\Models\REST;
+use App\Models\Coupons_true;
+
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\Userprofile;
+use Illuminate\Support\Facades\Input;
+use Config;
 
 class UcenterController extends Controller
 {
@@ -314,18 +320,11 @@ class UcenterController extends Controller
 	/**
 	 * @action: Red packet	我的红包
 	 */
-	public function redPacket()
+	/*public function redPacket()
 	{
 		return view('home/ucenter/red_packet');
 	}
-	/**
-	 * @action: Change history	兑换历史
-	 * 
-	 */
-	public function changeHistory()
-	{
-		return view('home/ucenter/change_history');
-	}
+	
 	/**
 	 * @action: Systeminfo	系统消息
 	 * 
@@ -502,4 +501,143 @@ class UcenterController extends Controller
         session()->forget("$phone");
         return json_encode($ret);
 	}
+	 /**
+     * @action: Red packet	兑换红包
+     */
+    public function redpacket_exchange(){
+        $code = Input::get('code');
+        $user_info = session('user_info');
+        $user = DB::table('coupons_true')->where('CDKEY', $code)->where('is_user_id',null)->where('user_name',null)->first();
+        if(isset($user)){
+          $re = DB::table('coupons_true')
+                ->where('true_id',$user->true_id)
+                ->update(['is_user_id'=>$user_info['id'],'user_name'=>$user_info['username'],'user_time'=>time()]);
+            if($re){
+                $info['c_value'] = $user->c_value;
+                if($user->is_statues == 0){
+                    $info['is_statues'] = '未使用';
+                }else{
+                    $info['is_statues'] = '已使用';
+                }
+                if($user->end_time == ''){
+                    $info['end_time'] = '永久';
+                }else{
+                    $info['end_time'] = date('Y-m-d',$user->end_time);
+                }
+
+                $info['c_name'] = $user->c_name;
+                $this->redLog($user_info['id'],$user->c_name,$user->CDKEY,0,$user->c_value);
+                $data['error'] = 1;//成功
+                $data['info'] = $info;
+            }else{
+                $data['error'] = 0;//异常
+            }
+        }else{
+                $data['error'] = -1;//不存在或已被兑换
+        }
+       echo json_encode($data);
+    }
+    /**
+     * @action: Red packet	红包获取记录
+     */
+    protected function redLog($user_id = '',$red_name = '',$red_cdkey = '',$type = '',$admin_id = '',$val = ''){
+       $re = DB::table('changehistory')->insert(
+            [
+                'user_id'=>$user_id,
+                'redpacket_name'=>$red_name,
+                'redpacket_cdkey'=>$red_cdkey,
+                'add_time'=>time(),
+                'type'=>$type,
+                'admin_id'=>$admin_id,
+				'val'=>$val
+            ]
+        );
+        if($re){
+            return $re;
+        }else{
+            return false;
+        }
+    }
+	/**
+	 * @action: Red packet	我的红包
+	 */
+	public function redPacket()
+	{
+        $user_info = session('userinfo');
+        $user_id = $user_info['id'];
+        $user_name = $user_info['username'];
+		$users = Coupons_true::where(['is_user_id'=>$user_id,'user_name'=>$user_name])->paginate(2);
+		return view('home/ucenter/red_packet',['info'=>$users]);
+	}
+    /**
+     * @action: Red packet	幸运转盘
+     */
+    public function lucky(){
+        $user_info = session('userinfo');
+        $user_id = $user_info['id'];
+        $user = DB::table('user_profile')->where('user_id', $user_id)->first();
+		
+        $server_member = Config::get('member.member');
+        $memberpoint = $user->memberpoint;
+		
+        return view('home/ucenter/lucky',['server_m'=>$server_member,'member'=>$memberpoint]);
+    }
+    /**
+     * @action: Red packet	幸运转盘抽奖入库
+     */
+    public function lucky_do(){
+        $code = Input::get('code');
+        $user_info = session('user_info');
+
+        $re = $this->prize_records($code);
+        $user_id = $user_info['id'];
+
+    }
+    /**
+     * @action: Red packet	映射出奖品
+     */
+    protected function prize_records ($code = null){
+        $arr = Config::get('member.prize_records');//获取奖品
+        $len = count($arr);
+        if($len<$code||$code<0){
+            return false; //获奖码错误
+        }
+        if($code===null){
+            return $arr;//拉取所有奖品
+        }else{
+            $str = '';
+            foreach($arr as $k=>$v){
+                if($k == $code){
+                    $str = $v;
+                }
+            }
+            return $str;//返回抽中奖品
+        }
+}
+
+
+    public function session(){
+        $arr = ['id'=>1,'username'=>'zhangsan'];
+        session(['user_info'=>$arr]);
+    }
+	/**
+	 * @action: Change history	兑换历史
+	 * 
+	 */
+	public function changeHistory()
+	{
+		$info = session('userinfo');
+		$data  = DB::table('changehistory')->where('user_id','=',$info['id'])->get();
+		return view('home/ucenter/change_history',['data'=>$data]);
+	}
+	/**
+	 * @action: Systeminfo	系统消息
+	 * 
+	 */
+	
+	/**
+	 * @action: Account settings	账户设置
+	 * 
+	 */
+	
 }
