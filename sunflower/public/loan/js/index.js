@@ -1,5 +1,5 @@
 ;
-var _baseServer = 'http://www.sf.com/sunflower/public',
+var _baseServer = 'http://localhost/ghm/sunflower/public',
 _www = 'https://www.yirendai.com/LandingPage/mhd/success/index.html',
 cookieUrl = '.yirendai.com',
 path = '/',

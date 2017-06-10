@@ -64,6 +64,59 @@ $(document).ready(function() {
 
 
 </script>
+
+    <script>
+        $(function () {
+            var user_id="<?php $user=session('userinfo');$user_id=$user['id'];if($user_id){ echo $user_id;}else{echo '';};?>";
+            //支付
+            $('.zf').click(function () {
+                var obj=$(this);
+                if(checkLogin()){
+                    var zfDiv=obj.prev('.zf-div');
+                    $('.zf').show();
+                    $('.zf-div').hide();
+                    zfDiv.show();
+                    obj.hide();
+                }
+            });
+            //检测登陆
+            function checkLogin(){
+                if(user_id==''){
+                    alert('投资这么慎重的事，请先登陆哦');
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+            //账户余额支付
+            $('.zh').click(function () {
+                var obj=$(this);
+                var p=prompt('请输入您要投入的金额：');
+                var method='zh';
+                var loan_id=obj.attr('loan_id');
+                var loan_name=obj.attr('loan_name');
+                if(p){
+                    $.ajax({
+                        type:'post',
+                        url:'{{asset('invest/zhInvest')}}',
+                        data:{
+                            money:p,
+                            method:method,
+                            loan_id:loan_id,
+                            loan_name:loan_name,
+                            _token:'{{ csrf_token() }}'
+                        },
+                        dataType:'json',
+                        success: function (data) {
+                            $('.zf-div').hide();
+                            $('.zf').show();
+                            alert(data.msg);
+                        }
+                    })
+                }
+            })
+        })
+    </script>
 </head>
 <body>
 <header>
@@ -104,7 +157,7 @@ $(document).ready(function() {
       <div class="fn-left logo"> <a class="" href="{{ URL::route('index/index') }}"> <img src="{{ URL::asset('/images/logo.png') }}"  title=""> </a> </div>
       <ul class="top-nav fn-clear">
         <li class="on"> <a href="{{ URL::route('index/index') }}">首页</a> </li>
-        <li> <a href="{{ URL::route('invest') }}" class="">我要投资</a> </li>
+        <li> <a href="{{ URL::route('invest/index') }}" class="">我要投资</a> </li>
         <li> <a href="{{ URL::route('loan/index') }}" class="">我要借贷</a> </li>
         <li> <a href="{{ URL::route('crowdfunding/cflist') }}" class="">参与众筹</a> </li>
         <li> <a href="{{ URL::route('safe/help') }}">安全保障</a> </li>
@@ -127,7 +180,7 @@ $(document).ready(function() {
             </dl>
             <dl>
                 <dt>相关业务</dt>
-                <dd><a href="{{ URL::route('invest') }}">我要投资</a><a href="#">我要借款</a></dd>
+                <dd><a href="{{ URL::route('invest/index') }}">我要投资</a><a href="#">我要借款</a></dd>
             </dl>
             <dl>
                 <dt>帮助中心</dt>

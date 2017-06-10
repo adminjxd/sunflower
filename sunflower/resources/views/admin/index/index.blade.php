@@ -154,7 +154,7 @@
                                 <a class="J_menuItem" href="#">资金管理 <span class="fa arrow"></span></a>
                                 <ul class="nav nav-third-level">
                                     <li>
-                                        <a class="J_menuItem" href="fontawesome.html">查看资金池</a>
+                                        <a class="J_menuItem" href="{{ URL::asset('ainvest/capital_pool') }}">查看资金池</a>
                                     </li>
                                 </ul>
                             </li>

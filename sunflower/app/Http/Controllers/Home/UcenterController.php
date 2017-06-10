@@ -90,7 +90,33 @@ class UcenterController extends Controller
 	 */
 	public function investRecord()
 	{
-		return view('home/ucenter/invest_record');
+        $user=session('userinfo');
+        $user_id=$user['id'];
+        //sun 存宝
+        $u['deposit']=DB::table('deposit')->select('money', 'earnings')->where('user_id',$user_id)->get()->toarray();
+        //散标投资
+        $u['invest']=DB::table('invest')->select('invest_time','invest_money', 'return_num', 'return_money','total_num','loan_name','status')->where('user_id',$user_id)->get()->toarray();
+        $invest_all=0;
+        $a_earnings=0;
+        $f_earnings=0;
+        foreach ($u as $k => $v) {
+            foreach ($v as $kk=>$vv) {
+                if(isset($vv->money)){
+                    $invest_all+=$vv->money;
+                    $a_earnings+=$vv->earnings;
+                }
+                if(isset($vv->invest_money)){
+                    $invest_all+=$vv->invest_money;
+                    $f_earnings+=$vv->return_money*($vv->total_num-$vv->return_num);
+                    $a_earnings+=$vv->return_money*$vv->return_num;
+                }
+              }
+        }
+        $u['invest_all']=$invest_all;
+        $u['a_earnings']=$a_earnings;
+        $u['f_earnings']=$f_earnings;
+//        print_r($u);die;
+        return view('home/ucenter/invest_record',['u'=>$u]);
 	}
 	/**
 	 * @action: Returned Money 回款计划
