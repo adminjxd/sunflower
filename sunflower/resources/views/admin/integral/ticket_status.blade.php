@@ -32,6 +32,8 @@
                                 <th>所属兑换券</th>
                                 <th>面值</th>
                                 <th>兑换码</th>
+                                <th>开始日期</th>
+                                <th>截止日期</th>
                                 <th>是否使用</th>
                                 <th>使用者账户</th>
                             </tr>
@@ -40,6 +42,16 @@
                                     <td>{{$v['c_name']}}</td>
                                     <td>{{$v['c_value']}}</td>
                                     <td>{{$v['CDKEY']}}</td>
+                                    @if(empty($v['start_time']))
+                                        <td>永久</td>
+                                    @else
+                                        <td>{{date('Y-m-d',$v['start_time'])}}</td>
+                                    @endif
+                                    @if(empty($v['end_time']))
+                                        <td>永久</td>
+                                    @else
+                                        <td>{{date('Y-m-d',$v['end_time'])}}</td>
+                                    @endif
                                     @if($v['is_statues']==0)
                                         <td>暂未使用</td>
                                     @else

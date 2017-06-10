@@ -99,6 +99,13 @@ Route::post('ucenter/moneytype', ['uses'=>'Home\UcenterController@moneytype','as
 Route::post('ucenter/moveMoney', ['uses'=>'Home\UcenterController@moveMoney','as'=>'ucenter/moveMoney']);
 //我的红包
 Route::get('ucenter/redpacket', ['uses'=>'Home\UcenterController@redpacket','as'=>'ucenter/redpacket']);
+//前台，CDKEY兑换红包
+Route::post('redpacket/exchange', 'Home\UcenterController@redpacket_exchange');
+//前台，幸运大转盘
+Route::get('ucenter/lucky', 'Home\UcenterController@lucky');
+Route::any('redpacket/session', 'Home\UcenterController@session');
+//前台，用户抽奖行为
+Route::post('redpacket/lucky_do', 'Home\UcenterController@lucky_do');
 //兑换历史
 Route::get('ucenter/changehistory', ['uses'=>'Home\UcenterController@changehistory','as'=>'ucenter/changehistory']);
 //系统消息

@@ -87,7 +87,7 @@
                 obj.parents('tr').remove()
             })
             //添加优惠券
-            $('#add').click(function(){
+            $(document).on('click','#add',(function(){
                 var obj = $(this) ;
                 var name_len = $('.coupons_name').length
                 if(name_len==0){
@@ -131,14 +131,16 @@
                             $('.del').parents('tr').remove()
                             $('#list').append(str)
                         }else{
+                            obj.attr('statues',1)
                             alert('请检查数据')
                         }
                     },
                     error:function(){
+                        obj.attr('statues',1)
                         alert('请联系管理员')
                     }
                 })
-            })
+            }))
             $(document).on('click','.coupons_del',function(){
                 var obj = $(this)
                 if(typeof(obj.attr('statues'))!='undefined'){

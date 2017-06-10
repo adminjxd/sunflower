@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use App\Models\Coupons;
@@ -124,6 +123,40 @@ class IntegralController extends Controller
         echo $re;
     }
     /**
+     *实体券有效期设置
+     * @param
+     * @return
+     */
+    public function true_time(){
+        $data = Input::get();
+        $num = $data['num'];
+        $server_num = $data['server_num'];
+        $start = strtotime($data['start']);
+        $coupons_name = $data['coupons_name'];
+        $end = strtotime($data['end']);
+       if($num > $server_num){
+           $success['error'] = -1;//数量设置错误
+       }else{
+           if($start > $end){
+               $success['error'] = -2;//时间段顺序错误
+           }else{
+               $re = DB::table('coupons_true')->limit($num)
+                   ->where('is_statues',0)
+                   ->where('c_name',$coupons_name)
+                   ->where('start_time')
+                   ->where('end_time')
+                   ->update(['start_time' => $start,'end_time'=>$end]);
+               if($re > 0){
+                $success['error'] = 1;//设置成功；
+                $success['num'] = $re;//返回受影响行数
+               }else{
+                $success['error'] = 0;//设置失败
+               }
+           }
+       }
+        echo json_encode($success);
+    }
+    /**
      * 查看实体券页面
      *
      * @param
@@ -131,7 +164,8 @@ class IntegralController extends Controller
      */
     public function coupons_true($name){
         $info = Coupons_true::where('c_name',$name)->paginate(10);
-        return view('admin/integral/coupons_true',['coupons_name'=>$name,'info'=>$info]);
+        $nu = Coupons_true::where(['c_name'=>$name,'is_statues'=>0,'start_time'=>null,'end_time'=>null])->count();
+        return view('admin/integral/coupons_true',['coupons_name'=>$name,'info'=>$info,'nu'=>$nu]);
     }
     /**
      * 查看优惠券使用情况

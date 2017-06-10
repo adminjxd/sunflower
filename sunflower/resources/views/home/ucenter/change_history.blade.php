@@ -24,14 +24,13 @@
     <div class="personal-main">
       <div class="personal-zqzr personal-xtxx" style="min-height: 500px;">
         <h3> <i>兑换历史</i> </h3>
-        <div class="wdhb-title wdhb-dhls"> <span class="wdhb-yzm">验证码</span><span class="wdhb-con">兑换红包名称</span><span class="wdhb-deadline">兑换日期</span> </div>
+        <div class="wdhb-title wdhb-dhls"> <span class="wdhb-yzm">红包名称</span><span class="wdhb-con">兑换日期</span><span class="wdhb-line">红包金额</span> </div>
         <form id="form" name="form" method="post" action="">
           <div class="zqzr-list">
             <ul>
-              <li><span class="wdhb-yzm">12345678</span><span class="wdhb-con">现金红包50元</span><span class="wdhb-deadline">2015-10-1</span></li>
-              <li><span class="wdhb-yzm">12345678</span><span class="wdhb-con">现金红包50元</span><span class="wdhb-deadline">2015-10-1</span></li>
-              <li><span class="wdhb-yzm">12345678</span><span class="wdhb-con">现金红包50元</span><span class="wdhb-deadline">2015-10-1</span></li>
-              <li><span class="wdhb-yzm">12345678</span><span class="wdhb-con">现金红包50元</span><span class="wdhb-deadline">2015-10-1</span></li>
+            @foreach($data as $key => $val)
+              <li><span class="wdhb-yzm">{{$val->redpacket_name}}</span><span class="wdhb-con">{{date('Y-m-d',$val->add_time)}}</span><span class="wdhb-line">{{$val->val}}</span></li>
+            @endforeach
             </ul>
           </div>
           <!--<div style="float:left; width:760px;height:200px;padding-top:100px; text-align:center;color:#d4d4d4; font-size:16px;">
