@@ -7,7 +7,7 @@ configUrl = {
     activityMark: '79779557-562c-3edb-a24e-1c8ca12fabab',
     wapRegisterUrl: _baseServer + '/loan/wapRegister',
     wapSendMsg: _baseServer + '/loan/wapSendMsg',
-    wapReSendMsg: _baseServer + '/loan/wapReSendMsg',
+    wapReSendMsg: _baseServer + '/loan/wapSendMsg',
     getVerify: _baseServer + '/loan/getVerify',
 };
 var uuid = new Date().getTime();
@@ -82,18 +82,18 @@ $(function() {
         var p = $('#lp-input-method').val();
         var t = $.trim($('#lp-mobile').val());
         var token = $("#token").val();
-        // if (a=='') {
-        //     $('.lp-input-tips').text('贷款金额必须填');
-        //      return
-        // }
-        // if (m=='') {
-        //     $('.lp-input-tips').text('贷款时常必须填');
-        //      return
-        // }
-        //  if (!isMobile(t)) {
-        //      $('.lp-input-tips').text('手机号格式不正确');
-        //      return
-        //  };     
+        if (a=='') {
+            $('.lp-input-tips').text('贷款金额必须填');
+             return
+        }
+        if (m=='') {
+            $('.lp-input-tips').text('贷款时常必须填');
+             return
+        }
+         if (!isMobile(t)) {
+             $('.lp-input-tips').text('手机号格式不正确');
+             return
+         };     
         $.ajax({
             url: configUrl.wapSendMsg,//发送短信
             data: {
@@ -110,24 +110,7 @@ $(function() {
                     $('.lp-control_group span').text(l(t));
                     n()
                 } else {
-                    switch (e.error.code) {
-                    case 100100003:
-                        $('.lp-input-tips').text('验证码输入错误!');
-                        i();
-                        break;
-                    case 400002021:
-                        $('.lp-input-tips').text('手机号码已经被绑定!');
-                        i();
-                        break;
-                    case 400002005:
-                        $('.lp-input-tips').text(e.error.message);
-                        i();
-                        break;
-                    default:
-                        $('.lp-input-tips').text(e.error.message);
-                        i();
-                        break
-                    }
+                    alert(e.error.msg);
                 }
             },
             error: function() {}
@@ -162,7 +145,7 @@ $(function() {
         $.ajax({
             url: configUrl.wapReSendMsg,
             data: {
-                mobile: $.trim(i),
+                phone: $.trim(i),
                 activityMark: configUrl.activityMark,
                 uuid: uuid
             },
@@ -215,12 +198,10 @@ $(function() {
             type: 'post',
             success: function(t) {
                 if (t.error.code != 0) {
-                    $('.lp-fixed-input i').show().text(t.error.message)
+                    $('.lp-fixed-input i').show().text(t.error.msg)
                 } else {
-                    var e = $.trim(i),
-                    n = e.substr(3, 4);
-                    setCookie('_uid', t.data.userId, cookieUrl, path);
-                    window.location.href = _www + '?u=' + e.replace(n, '****') + '&userId=' + t.data.userId
+                    alert('验证成功，请您耐心等待工作人员与您联系');
+                    $('#fixedClose').trigger('click');
                 }
             }
         })

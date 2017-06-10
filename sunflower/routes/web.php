@@ -39,6 +39,13 @@ Route::get('login/loginout', 'Home\LoginController@loginout');
 //更换验证码
 Route::post('login/change_captcha', 'Home\LoginController@changeCaptcha');
 
+//第三方登陆
+Route::get('login/oauth_login', 'Home\LoginController@oauthLogin');
+//绑定帐号
+Route::get('login/bind_user', 'Home\LoginController@bindUser');
+//绑定执行
+Route::post('login/bind_do', 'Home\LoginController@bindDo');
+
 //我要投资
 Route::get('invest/index', ['uses'=>'Home\InvestController@index','as'=>'invest/index']);
 //支付同步
@@ -58,8 +65,18 @@ Route::any('invest/{action}', function($action='invest'){
 Route::get('invest/info', ['uses'=>'Home\InvestController@info','as'=>'invest/info']);
 //安全保障
 Route::get('safe/help', ['uses'=>'Home\SafeController@help','as'=>'safe/help']);
+
+
 //上传头像
 Route::post('ucenter/upload', ['uses'=>'Home\UcenterController@upload','as'=>'ucenter/upload']);
+//支付宝支付处理路由
+Route::get('ucenter/alipay','Home\UcenterController@Alipay');  // 发起支付请求
+Route::any('ucenter/notify','Home\UcenterController@AliPayNotify'); //服务器异步通知页面路径
+Route::any('ucenter/return','Home\UcenterController@AliPayReturn');  //页面跳转同步通知页面路径
+
+//支付宝异步处理测试
+Route::get('ucenter/test', ['uses'=>'Home\UcenterController@test','as'=>'ucenter/test']);
+
 //我的账户
 Route::get('ucenter/myaccount', ['uses'=>'Home\UcenterController@myaccount','as'=>'ucenter/myaccount']);
 //资金记录
@@ -72,8 +89,14 @@ Route::get('ucenter/returnedmoney', ['uses'=>'Home\UcenterController@returnedmon
 Route::get('ucenter/openthirdparty', ['uses'=>'Home\UcenterController@openthirdparty','as'=>'ucenter/openthirdparty']);
 //充值
 Route::get('ucenter/recharge', ['uses'=>'Home\UcenterController@recharge','as'=>'ucenter/recharge']);
+//充值成功返回信息处理数据
+Route::get('ucenter/addmoney', ['uses'=>'Home\UcenterController@addmoney','as'=>'ucenter/addmoney']);
 //提现
 Route::get('ucenter/withdrawdeposit', ['uses'=>'Home\UcenterController@withdrawdeposit','as'=>'ucenter/withdrawdeposit']);
+//获取账户余额
+Route::post('ucenter/moneytype', ['uses'=>'Home\UcenterController@moneytype','as'=>'ucenter/moneytype']);
+//提现记录
+Route::post('ucenter/moveMoney', ['uses'=>'Home\UcenterController@moveMoney','as'=>'ucenter/moveMoney']);
 //我的红包
 Route::get('ucenter/redpacket', ['uses'=>'Home\UcenterController@redpacket','as'=>'ucenter/redpacket']);
 //兑换历史
@@ -82,6 +105,16 @@ Route::get('ucenter/changehistory', ['uses'=>'Home\UcenterController@changehisto
 Route::get('ucenter/systeminfo', ['uses'=>'Home\UcenterController@systeminfo','as'=>'ucenter/systeminfo']);
 //账户设置
 Route::get('ucenter/accountset', ['uses'=>'Home\UcenterController@accountset','as'=>'ucenter/accountset']);
+//身份证验证
+Route::post('ucenter/authentication', ['uses'=>'Home\UcenterController@authentication','as'=>'ucenter/authentication']);
+//修改密码
+Route::post('ucenter/update_pwd', 'Home\UcenterController@updatePwd');
+//修改手机之发送短信
+Route::post('ucenter/phone_send', 'Home\UcenterController@phoneSend');
+//修改手机之短信验证
+Route::post('ucenter/check_phone_msg', 'Home\UcenterController@checkPhoneMsg');
+
+
 //关于我们
 Route::get('aboutus/announcement', ['uses'=>'Home\AboutUsController@announcement','as'=>'aboutus/announcement']);
 //公司简介
@@ -160,10 +193,21 @@ Route::post('aloan/searchrecord', 'Admin\LoanController@searchRecord');
 
 //后台积分模块
 Route::get('aintegral/ticket_list', 'Admin\IntegralController@ticketList');
-Route::get('aintegral/ticket_status', 'Admin\IntegralController@ticketStatus');
-Route::get('aintegral/goods_list', 'Admin\IntegralController@goodsList');
+Route::get('aintegral/ticket_status', 'Admin\IntegralController@coupons_status');
 Route::get('aintegral/add_goods', 'Admin\IntegralController@addGoods');
+Route::get('aintegral/goods_uplist/{id}', 'Admin\IntegralController@goods_uplist');
 Route::get('aintegral/goods_order', 'Admin\IntegralController@goodsOrder');
+Route::get('aintegral/coupons_true/{name}', 'Admin\IntegralController@coupons_true');
+Route::get('aintegral/goods_list', 'Admin\IntegralController@goods_list');
+Route::post('aintegral/goods_add', 'Admin\IntegralController@goods_add');
+Route::post('aintegral/goods_up', 'Admin\IntegralController@goods_up');
+Route::post('aintegral/goods_ajax_img', 'Admin\IntegralController@goods_ajax_img');
+Route::post('aintegral/goods_del', 'Admin\IntegralController@goods_del');
+Route::post('aintegral/goods_ajax_sta', 'Admin\IntegralController@goods_ajax_sta');
+Route::post('aintegral/coupons_true_add', 'Admin\IntegralController@coupons_true_add');
+Route::post('aintegral/coupons_add','Admin\IntegralController@coupons_add');
+Route::post('aintegral/coupons_del','Admin\IntegralController@coupons_del');
+
 
 //后台众筹模块
 Route::get('acrowd/category_list', 'Admin\CrowdfundingController@categoryList');
@@ -171,5 +215,7 @@ Route::get('acrowd/add_category', 'Admin\CrowdfundingController@addCategory');
 Route::get('acrowd/projects_list', 'Admin\CrowdfundingController@projectsList');
 Route::get('acrowd/projects_order', 'Admin\CrowdfundingController@projectsOrder');
 
+
 //后台投资资金模块
 Route::get('ainvest/capital_pool', 'Admin\InvestController@capitalPool');
+

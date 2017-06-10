@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers;
 class InvestController extends Controller
 {
     /**
@@ -178,6 +179,7 @@ class InvestController extends Controller
         }
         //账户余额修改
         if($method){
+            $this->accountdesc($u_id,$money,'存入Sun 存宝');
             $user=$this->getUser($u_id);
             $balance=$user[0]->balance;
             $re3=DB::table('user_profile')->where('user_id', $u_id)->update(['balance' =>$balance-$money]);
@@ -225,6 +227,7 @@ class InvestController extends Controller
         //修改集资金额
         $re2 = DB::table('loan')->where('loan_id', $loan_id)->update(['raise' =>$raise_money+$money]);
         if($method){
+            $this->accountdesc($u_id,$money,'投资'.$loan_name);
             $user=$this->getUser($u_id);
             $balance=$user[0]->balance;
             $re3=DB::table('user_profile')->where('user_id', $u_id)->update(['balance' =>$balance-$money]);

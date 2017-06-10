@@ -12,16 +12,17 @@
         var flag3 = 0;// 验证码验证状态1通过，0失败
         var isSuccess = false; //手机验证码是否发送标识
         var h_url = $('#h_url').val();//根目录地址
+        var uid = $('#uid').val();//第三方唯一标识
         var pwdlevel = 0;//密码等级
         //获取手机验证码
         var $getKey = $("._getkey");
-        var $phoneyanzhengma = $("._yanzhengma");//图片验证码
+        var $yanzhengma = $("._yanzhengma");//图片验证码
         //更换图片验证码
         var $changeCapcherButton = $("._changeCapcherButton");
         var $phoneMsg = $('#phoneJy');//手机提示标签
-        var login = {
+        var bind = {
             init: function() {
-                login._bind();
+                bind._bind();
             },
             _bind: function() {
                 //获取手机验证码
@@ -35,74 +36,180 @@
                     }
                     if (flag4 == 1) {
                         flag4 = 0;
-                        login._ya($(this));
+                        bind._ya($(this));
                     }
                     return false;
                 });
                 // 更换验证码
                 $changeCapcherButton.on('click',function(event){
                     event.preventDefault();
-                    login.captchaChange();
+                    var b_sign = $(this).attr('b_sign');
+                    bind.captchaChange($(this),b_sign);
                     return false;
                 })
                 //手机号验证
                 $("._phoneNum").on('blur keyup', function(event) {
                     event.preventDefault();
-                    login.phoneYz();
+                    bind.phoneYz();
                     return false;
                 });
                 //手机验证码验证
                 $("._phonVerify").on('blur', function(event) {
                     event.preventDefault();
-                    login.verify($(this));
+                    bind.verify($(this));
                     return false;
                 });
                 $("._userName").on('blur', function(event) {
                     event.preventDefault();
-                    login.strVerify($(this));
+                    bind.strVerify($(this));
                     return false;
                 });
                 $("._password").on('blur', function(event) {
                     event.preventDefault();
-                    login.strVerify($(this));
+                    bind.strVerify($(this));
                     return false;
                 });
                 $("._repeatPassword").on('blur', function(event) {
                     event.preventDefault();
-                    login.strVerify($(this));
+                    bind.strVerify($(this));
                     return false;
                 });
                 // 验证码验证
-                $phoneyanzhengma.on('blur', function(event) {
+                $yanzhengma.on('blur', function(event) {
                     event.preventDefault();
-                    login.verify($(this));
+                    bind.verify($(this));
                     return false;
                 });
                 $("._ajaxSubmit").on('click', function(event) {
                     event.preventDefault();
-                    login.ajaxSubmit();
+                    var b_sign = $(this).attr('b_sign');
+                    bind.ajaxSubmit(b_sign);
+                    return false;
+                });
+
+                //绑定已有帐号检测
+                $("#b_username").on('blur', function(event) {
+                    event.preventDefault();
+                    bind.b_strVerify($(this));
+                    return false;
+                });
+                $("#b_password").on('blur', function(event) {
+                    event.preventDefault();
+                    bind.b_strVerify($(this));
+                    return false;
+                });
+                $("#b_captcha").on('blur', function(event) {
+                    event.preventDefault();
+                    bind.b_strVerify($(this));
+                    return false;
+                });
+                $("#submitBtn").on('click', function(event) {
+                    event.preventDefault();
+                    //获取绑定标识
+                    var b_sign = $(this).attr('b_sign');
+                    bind.b_ajaxSubmit(b_sign);
                     return false;
                 });
             },
+            b_strVerify: function(event) {
+                var strName = event.attr('id');
+                var strVal = event.val();
+                var ids = '#' + strName + '_sign';
+                //验证用户名
+                if (strName == 'b_username') {
+                    if (strVal == null || strVal == '') {
+                        $(ids).text("");
+                        $(ids).append("<span style=color:#ff0000>用户名不能为空</span>");
+                        return false;
+                    } else {
+                      $(ids).text("");
+                    }
+                }
+                //验证密码
+                if (strName == 'b_password') {
+                    if (strVal == null || strVal == '') {
+                        $(ids).text("");
+                        $(ids).append("<span style=color:#ff0000>密码不能为空</span>");
+                        return false;
+                    } else {
+                        $(ids).text("");
+                    }
+                }
+                //验证验证码
+                if (strName == 'b_captcha') {
+                    if (strVal == null || strVal == '') {
+                        $(ids).text("");
+                        $(ids).append("<span style=color:#ff0000>验证码不能为空</span>");
+                        return false;
+                    } else {
+                        $(ids).text("");
+                    }
+                }
+            },
+            b_ajaxSubmit: function(b_sign) {
+                if ($("#b_username").val() == null || $("#b_username").val() == '') {
+                    $('#b_username_sign').text("");
+                    $('#b_username_sign').append("<span style=color:#ff0000>用户名不能为空</span>");
+                    return false;
+                } else if ($('#b_password').val() == null || $('#b_password').val() == '') {
+                    $('#b_password_sign').text("");
+                    $('#b_password_sign').append("<span style=color:#ff0000>密码不能为空</span>");
+                    return false;
+                } else if ($('#b_captcha').val() == null || $('#b_captcha').val() == '') {
+                    $('#b_captcha_sign').text("");
+                    $('#b_captcha_sign').append("<span style=color:#ff0000>验证码不能为空</span>");
+                    return false;
+                } else {
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        url: h_url + 'login/bind_do', //发送请求地址
+                        data: {
+                            "username": $('#b_username').val(),
+                            "password": $('#b_password').val(),
+                            "captcha": $('#b_captcha').val(),
+                            "b_sign": b_sign,
+                            "uid": uid,
+                        },
+                        //请求成功后的回调函数有两个参数
+                        success: function(data) {
+                            alert(data.msg);
+                            if (data.retCode == '1') {
+                              window.location = h_url + "index/index";
+                            } else {
+                                $('#look1').trigger('click');
+                            }
+                        }
+                    });
+                }
+            },
             //手机发送验证码
             _ya: function(o) {
-                if (login.phoneSend(o)) {
+                if (bind.phoneSend(o)) {
                     if (flaghave != "1") {
-                        login._daojishi();
+                        bind._daojishi();
                     }
                 } else {
                     flag4 = 1;
                 }
             },
             // 更换验证码
-            captchaChange: function() {
+            captchaChange: function(event,b_sign) {
+                var yzm = $('#yzm');
+                var yanzheng = $('#yanzheng');
                 $.ajax({
                     type: "post",
                     dataType: "json",
                     url: h_url + 'login/change_captcha',
+                    data: {},
                     success: function(data) {
-                        flag3 = 0;
-                        $('#yzm').attr('src',data.cap_url);
+                        if (b_sign == '1') {
+                            flag3 = 0;
+                            var obj = yzm;
+                        } else {
+                            var obj = yanzheng;
+                        }
+                        obj.attr('src',data.cap_url);
                     }
                 });
             },
@@ -134,7 +241,7 @@
                 }
             },
             phoneSend: function(o) {
-                if (!login.phoneYz()) {
+                if (!bind.phoneYz()) {
                     return false;
                 }
                 if (flag == "1") {
@@ -312,7 +419,7 @@
                     }
                 });
             },
-            ajaxSubmit: function() {
+            ajaxSubmit: function(b_sign) {
                 var selectedItems = new Array();
                 $("input[name='protocol']:checked").each(function() {
                     selectedItems.push($(this).val());
@@ -368,22 +475,27 @@
                         $.ajax({
                             type: "post",
                             dataType: "json",
-                            url: h_url + 'register/reg_do',
+                            url: h_url + 'login/bind_do', //发送请求地址
                             cache: false,
                             async: false,
                             data: {
                                 "username": $('#userName').val(),
                                 "password": $('#password').val(),
+                                "captcha": $('#jpgVerify').val(),
                                 "phone": $("#phone").val(),
                                 "verifyCode":$("#phonVerify").val(),
+                                "b_sign": b_sign,
+                                "uid": uid,
                                 'pwdlevel':pwdlevel,
                             },
                             //请求成功后的回调函数有两个参数
                             success: function(data) {
+                                alert(data.msg);
                                 if (data.retCode == '1') {
-                            		 window.location = h_url + "register/reg_success/" + $('#userName').val();
-                                } else {
-                                    alert(data.msg);
+                                  window.location = h_url + "index/index";
+                                } else if (data.retCode == '3') {
+                                    $('#look').trigger('click');
+                                    flag3 = 0;
                                 }
                             }
                         });
@@ -391,7 +503,7 @@
                 }
             },
             _daojishi: function() {
-                login._setti(_t);
+                bind._setti(_t);
             },
             _setti: function(i) {
                 setTimeout(function() {
@@ -400,16 +512,16 @@
                         flag4 = 1;
                     } else {
                         $getKey.html("重新发送(" + i + ")");
-                        login._setti(parseInt(i - 1));
+                        bind._setti(parseInt(i - 1));
                     }
                 }, 1000);
             },
-            _changetCapther: function() {
-                $changeCapcherButton.trigger('click');
-                flag3 = 0;
-                return false;
-            }
+            // _changetCapther: function() {
+            //     $changeCapcherButton.trigger('click');
+            //     flag3 = 0;
+            //     return false;
+            // }
         };
-        login.init();
+        bind.init();
     });
 })(jQuery)

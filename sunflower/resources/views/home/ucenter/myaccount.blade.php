@@ -39,14 +39,14 @@
 		} 
 	</style>
       <div class="pmain-profile">
-        <div class="pmain-welcome"> <span class="fl"><span id="outLogin">晚上好，</span>tg_gpdt0139 喝一杯下午茶，让心情放松一下~</span> <span class="fr">上次登录时间：
-          2015-09-11 14:05:07 </span> </div>
+        <div class="pmain-welcome"> <span class="fl"><span id="outLogin">晚上好，</span>{{$userInfo['real_name']}} 喝一杯下午茶，让心情放松一下~</span> <span class="fr">上次登录时间：
+          {{$userInfo['last_logintime']}} </span> </div>
         <div class="pmain-user">
           <div class="user-head"> <span id="clickHeadImage" class="head-img" title="点击更换头像">
             <form  method="post" action="">
                 {{ csrf_field() }}
               <input type="hidden" name="userPhotoUploadForm" value="userPhotoUploadForm">
-              <span id="userPhotoUploadForm:photo"><img id="touxiang" src="{{ URL::asset('/images/touxiang.png') }}" alt="" style="width:88px;height:88px;z-index:0;"> <i class="headframe" style="z-index:0;"></i>-
+              <span id="userPhotoUploadForm:photo"><img id="touxiang" src="{{ URL::asset($userInfo['head'])}}" alt="" style="width:88px;height:88px;z-index:0;"> <i class="headframe" style="z-index:0;"></i>-
               <div id="userPhotoUploadForm:shangchuan-btn" class="ui-fileupload ui-widget" style="z-index:0;">
                 <div class="ui-fileupload-buttonbar ui-corner-top">
                 <span class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left"  role="button">
@@ -68,15 +68,19 @@
             </span> <span class="head-icon"> <a href="#"><i title="第三方资金账户未认证" class="headiconbg headicon01"></i></a> <a href="#"><i class="headiconbg headicon2"></i></a> <a href="#"><i class="headiconbg headicon03"></i></a> </span> </div>
           <div class="user-info user-info1">
             <ul>
-              <li>用户名<span>tg_gpdt0139</span></li>
-              <li>安全级别<span><i class="safe-level"><i class="onlevel" style="width:40%;"></i></i></span> <a href="#">[低]</a></li>
+              <li>用户名<span>{{$userInfo['username']}}</span></li>
+              <li>安全级别
+
+              <span><i class="safe-level"><i class="onlevel" style="width:40%;"></i></i></span> <a href="#">[{{$userInfo['pwdlevel']}}]</a>
+
+              </li>
               <li>您还未开通第三方支付账户，请 <a class="pmain-log" href="#">立即开通</a>以确保您的正常使用和资金安全。 </li>
             </ul>
           </div>
         </div>
         <div class="pmain-money">
           <ul>
-            <li class="none"><span><em>账户总额</em><i id="zhze" class="markicon"></i><span class="arrow-show1" style="display:none;">可用余额+待收本息</span><span class="icon-show1" style="display:none;"></span></span> <span class="truemoney"><i class="f26 fb">0.00 </i> 元</span> </li>
+            <li class="none"><span><em>账户总额</em><i id="zhze" class="markicon"></i><span class="arrow-show1" style="display:none;">可用余额+待收本息</span><span class="icon-show1" style="display:none;"></span></span> <span class="truemoney"><i class="f26 fb">{{$userInfo['balance']}} </i> 元</span> </li>
             <li><span><em>待收本息</em><i id="dsbx" class="markicon"></i><span class="arrow-show2" style="display:none;">未到账的投资项目的本金、利息总额</span><span class="icon-show2" style="display:none;"></span></span> <span class="truemoney"><i class="f26 fb">0.00 </i>元</span> </li>
             <li><span><em>累计收益</em><i id="ljsy" class="markicon"></i><span class="arrow-show3" style="display: none;">已到账的投资收益+未到账的投资收益</span><span class="icon-show3" style="display: none;"></span></span> <span class="truemoney"><i class="f26 fb c-pink">0.00 </i> 元</span> </li>
           </ul>
@@ -89,7 +93,7 @@
 			    		   $(this).find('span').removeClass('ui-state-hover');
 			    		   document.getElementById("userPhotoUploadForm:shangchuan-btn_input").click();
 			    	   });
-			    	   var safeLevel = "低";
+			    	   var safeLevel = "高";
 			    	   if(safeLevel=="高"){
 			    		   $(".pmain-user .user-info li .safe-level .onlevel").css("background-color","#f1483c");
 			    	   }
@@ -113,22 +117,19 @@
       <div class="pmain-connent">
         <div id="pmain-contab" class="pmain-contab">
           <ul>
-            <li id="pmain-contab1" class="on">回款计划</li>
-            <li id="pmain-contab2">资金记录</li>
-            <li id="pmain-contab3">投资记录</li>
+            <li id="pmain-contab1" class="on">贷款记录</li>
+            <li id="pmain-contab2">还款记录</li>
+            <li id="pmain-contab3">滞纳金</li>
             <li class="li-other"></li>
           </ul>
         </div>
         <div class="pmain-conmain" id="pmain-conmain">
           <div class="pmain-conmain1">
-            <div class="pmain-contitle"> <span class="pmain-titledate">计划回款时间</span><span class="pmain-titleproject">项目</span><span class="pmain-titletype">类型</span><span class="pmain-titlemoney">回款金额</span> </div>
+            <div class="pmain-contitle"> <span class="pmain-titledate">贷款类型</span><span class="pmain-titleproject">贷款时间</span><span class="pmain-titletype">贷款期限(月)</span><span class="pmain-titlemoney">贷款金额(元)</span> </div>
             <ul style="float:left;">
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-titleproject">宝马汽车借贷业务</span><span class="pmain-titletype">债权转让</span><span class="pmain-titlemoney">10.00</span></li>
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-titleproject">宝马汽车借贷业务</span><span class="pmain-titletype">债权转让</span><span class="pmain-titlemoney">10.00</span></li>
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-titleproject">宝马汽车借贷业务</span><span class="pmain-titletype">债权转让</span><span class="pmain-titlemoney">10.00</span></li>
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-titleproject">宝马汽车借贷业务</span><span class="pmain-titletype">债权转让</span><span class="pmain-titlemoney">10.00</span></li>
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-titleproject">宝马汽车借贷业务</span><span class="pmain-titletype">债权转让</span><span class="pmain-titlemoney">10.00</span></li>
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-titleproject">宝马汽车借贷业务</span><span class="pmain-titletype">债权转让</span><span class="pmain-titlemoney">10.00</span></li>
+              <?php foreach($loanInfo as $k=>$v): ?>
+              <li><span class="pmain-titledate"><?php echo $v['type_name'] ?></span><span class="pmain-titleproject"><?php echo date("Y-m-d H:i:s",$v['loan_addtime']) ?></span><span class="pmain-titletype"><?php echo $v['loan_period'] ?>月</span><span class="pmain-titlemoney"><?php echo $v['loan_amount'] ?></span></li>
+              <?php endforeach; ?>
               <!--<div style=" width:
 										760px;height:200px;padding-top:100px; text-align:center;color:#d4d4d4; font-size:16px;">
 										 <img src="images/nondata.png" width="60" height="60"><br><br>
@@ -137,9 +138,11 @@
             <div class="pmain-morebtn" style="border-top:0;margin-top:0"></div>
           </div>
           <div class="pmain-conmain2" style=" display:none;">
-            <div class="pmain-contitle"> <span class="pmain-titledate">交易时间</span><span class="pmain-w100">交易类型</span><span class="pmain-w120">交易金额</span><span class="pmain-w120">余额</span><span class="pmain-w200">备注</span> </div>
+           <div class="pmain-contitle"> <span class="pmain-titledate">还款项</span><span class="pmain-titleproject">还款时间</span><span class="pmain-titletype">还款类型</span><span class="pmain-titlemoney">实际还款</span> </div>
             <ul style="float:left;">
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-w100">债权转让</span><span class="pmain-w120 pmain-money">10.00</span><span class="pmain-w120 pmain-money">10.00</span><span class="pmain-w200">备注</span></li>
+            <?php foreach($reloanInfo as $k=>$v): ?>
+              <li><span class="pmain-titledate"><?php echo $v['type_name'] ?></span><span class="pmain-titleproject"><?php echo date("Y-m-d H:i:s",$v['time']) ?></span><span class="pmain-titletype"><?php  if($v['repayment_status'] == 1){ ?> 已还款 <?php  }else{ ?> 未还款 <?php } ?></span><span class="pmain-titlemoney"><?php echo $v['repayment_amount'] ?></span></li>
+            <?php endforeach; ?>
               <!--<div style=" width:760px;height:200px;padding-top:100px; text-align:center;color:#d4d4d4; font-size:16px;">
 										 <img src="images/nondata.png" width="60" height="60"><br><br>
 										   暂无资金记录</div>-->
@@ -147,9 +150,11 @@
             <div class="pmain-morebtn" style="border-top:0;margin-top:0"></div>
           </div>
           <div class="pmain-conmain3" style=" display:none;">
-            <div class="pmain-contitle"> <span class="pmain-titledate">交易时间</span><span class="pmain-w210">项目</span><span class="pmain-w80">状态</span><span class="pmain-whb200">我的投资</span><span class="pmain-whb110">我的收益</span> </div>
+            <div class="pmain-contitle"> <span class="pmain-titledate">创建时间</span><span class="pmain-w210">还款状态</span><span class="pmain-w80">本月应还款</span><span class="pmain-whb200">超出时间(天)</span><span class="pmain-whb110">滞纳金额</span> </div>
             <ul style="float:left;">
-              <li><span class="pmain-titledate">2015-10-20</span><span class="pmain-w210">债权转让</span><span class="pmain-w80 pmain-money">10.00</span><span class="pmain-whb200 pmain-money">10.00</span><span class="pmain-whb110">备注</span></li>
+            <?php foreach($overdueInfo as $k=>$v): ?>
+              <li><span class="pmain-titledate"><?php echo  date("Y-m-d",$v['addtime']); ?></span><span class="pmain-w210"><?php if($v['status']==0){ ?>未还款 <?php }else{ ?> 已还款 <?php } ?></span><span class="pmain-w80 pmain-money"><?php echo $v['amount'] ?></span><span class="pmain-whb200 pmain-money"><?php echo $v['overtime'] ?>天</span><span class="pmain-whb110"><?php echo $v['overdue_amount'] ?></span></li>
+            <?php endforeach; ?>
               <!--	<div style=" width:760px;height:200px;padding-top:100px; text-align:center;color:#d4d4d4; font-size:16px;">
 										    <img src="images/nondata.png" width="60" height="60"><br><br>
 										   暂无投资记录</div>-->
