@@ -91,6 +91,8 @@ Route::get('ucenter/recharge', ['uses'=>'Home\UcenterController@recharge','as'=>
 Route::get('ucenter/addmoney', ['uses'=>'Home\UcenterController@addmoney','as'=>'ucenter/addmoney']);
 //提现
 Route::get('ucenter/withdrawdeposit', ['uses'=>'Home\UcenterController@withdrawdeposit','as'=>'ucenter/withdrawdeposit']);
+//获取账户余额
+Route::post('ucenter/moneytype', ['uses'=>'Home\UcenterController@moneytype','as'=>'ucenter/moneytype']);
 //提现记录
 Route::post('ucenter/moveMoney', ['uses'=>'Home\UcenterController@moveMoney','as'=>'ucenter/moveMoney']);
 //我的红包

@@ -138,8 +138,13 @@
             <h6>填写提现金额</h6>
             <ul>
               <li> <span class="deposit-formleft">可用金额</span> <span class="deposit-formright"> <i>
-                <label id="form:blance">{{$balance}}</label>
-                </i>元 </span> </li>
+                <label id="form:blance"></label>
+                </i>元 
+									<select id="selpay">
+										<option value="1" selected="selected">账户余额</option>
+										<option value="2">sun存宝余额</option>
+									</select>
+								</span> </li>
               <li> <span class="deposit-formleft">提现金额</span> <span class="deposit-formright">
                 <input id="form:actualMoney" type="text" name="form:actualMoney" class="deposite-txt" maxlength="10">
                 元 </span> <span id="actualMoneyErrorDiv"><span id="actualMoney_message" style="display:none" class="error"></span></span> </li>
@@ -168,6 +173,34 @@
       </div>
     </div>
     <script type="text/javascript">
+		var type = $("#selpay").val();
+						$.ajax({
+											type:"POST",
+											data:{type:type},
+											url:"{{asset("ucenter/moneytype")}}",
+											dataType:"json",
+											success:function(data){
+												if(data.status == 1)
+												{
+													$("#form\\:blance").html(data.money)
+												}
+											}
+									})
+		  $("#selpay").change(function(){
+				var type = $(this).val();
+						$.ajax({
+											type:"POST",
+											data:{type:type},
+											url:"{{asset("ucenter/moneytype")}}",
+											dataType:"json",
+											success:function(data){
+												if(data.status == 1)
+												{
+													$("#form\\:blance").html(data.money)
+												}
+											}
+									})
+			})
 		  //计算实际提现的金额
 		  $("#form\\:actualMoney").keyup(function(){
 				var sum=Number($("#form\\:blance").html());
@@ -199,6 +232,8 @@
         var withdrawals = $("#form\\:cashFine").html();
 				//收款方账户
 				var phone = $('#phone').val();
+				//提现类型
+				var type = $("#selpay").val();
 				if(phone == "")
 				{
 						$(actualMessage).text("收款方账户不能为空");
@@ -209,19 +244,19 @@
 					 var reg= /^1[34578]\d{9}$/;
 					 if(reg.test(phone))
 					 {
-							if(sumMoney >= actualMoney && actualMoney>0)
+							if(sumMoney >= actualMoney && actualMoney>2)
 				      {
 								$(actualMessage).hide();
 								$.ajax({
 											type:"POST",
-											data:{actualMoney:actualMoney,withdrawals:withdrawals,phone,phone,sumMoney:sumMoney},
+											data:{actualMoney:actualMoney,withdrawals:withdrawals,phone,phone,sumMoney:sumMoney,type:type },
 											url:"{{asset("ucenter/moveMoney")}}",
 											dataType:"json",
 											success:function(data){
 												alert(data.message);
 												if(data.status == 1)
 												{
-													$("#form\\:blance").html(Number(sumMoney -actualMoney))
+													$("#form\\:blance").html(Math.ceil(sumMoney -actualMoney))
 												}
 											}
 									})
