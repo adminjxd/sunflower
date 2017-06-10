@@ -16,9 +16,13 @@ class InvestController extends Controller
      * 投资首页*/
     public function index()
     {
+        $now=Carbon::now()->startOfDay();
         $date=Carbon::yesterday();
+        $dateBefore=$now->addDay(-7);
         //昨日年化收益率
         $rate=DB::table('deposit_rate')->where('rate_date', $date)->value('rate');
+         //7日年化收益率
+        $rate7=DB::table('deposit_rate')->where('rate_date', '>=',"$dateBefore")->where('rate_date', '<=',"$date")->get();
         //累计投资
         $invest_total=DB::table('invest')->sum('invest_money');
         //累计收益
@@ -27,7 +31,7 @@ class InvestController extends Controller
         $loan=$this->getRights();
         //提示信息
         $msg=isset($_GET['msg'])?$_GET['msg']:'请信任我们';
-        return view('home.invest.invest',['invest_total'=>$invest_total,'return_total'=>$return_total,'rate'=>$rate,'loan'=>$loan,'msg'=>$msg]);
+        return view('home.invest.invest',['rate7'=>$rate7,'invest_total'=>$invest_total,'return_total'=>$return_total,'rate'=>$rate,'loan'=>$loan,'msg'=>$msg]);
     }
 
     /*
@@ -84,7 +88,7 @@ class InvestController extends Controller
         return $info;
     }
     /**
-     * Sun 存宝 存款成功 同步*/
+     * 支付宝  同步*/
     public function returns(){
         //调试 需 修改 T
         $status=isset($_GET['is_success'])?$_GET['is_success']:'T';
@@ -94,12 +98,14 @@ class InvestController extends Controller
             $money = isset($_GET['total_fee']) ? $_GET['total_fee'] : 500;
             //用户id
             $u_id =$this->getUID();
+            //Sun 存宝存款
             if($body=='Sun 存宝') {
                 $re=$this->doSun($u_id,$time,$money);
                 if($re){
                     return redirect()->route('invest', ['msg'=>'成功存入'.$money.'元人民币']);
                 }
             }else{
+                //散标投资
                 $re=$this->doInvest($u_id,$time,$money,$body);
                 if($re){
                 return redirect()->route('ucenter/investrecord');
@@ -112,7 +118,7 @@ class InvestController extends Controller
         }
     }
      /**
-      * Sun 存宝 存款成功 异步*/
+      * 支付宝 异步*/
     public function notify(){
         $post=isset($_POST)?$_POST:'no';
         $content=serialize($post);
@@ -134,7 +140,9 @@ class InvestController extends Controller
         foreach ($user as $k => $v) {
             foreach ($invest as $kk => $vv) {
                 if($v->user_id==$vv->user_id){
+                    //投资人姓氏
                     $invest[$kk]->user_name=substr($v->real_name,0,3);
+                    //总投资额
                     $invest_total+=$vv->invest_money;
                 }
             }
@@ -185,18 +193,21 @@ class InvestController extends Controller
         }
     }
     /*
-     * */
+     *散标投资 */
     protected function doInvest($u_id,$time,$money,$body){
         //method
         $method='';
         $re3=0;
         //loan_id
-        $loan_id=explode('/',$body);
-        if(count($loan_id)>1){
-            $loan_id=$loan_id[1];
+        $loan=explode('/',$body);
+        if(count($loan)>1){
+            $loan_id=$loan[1];
+            $loan_name=$loan[2];
             $re3=1;
         }else{
-            $loan_id=$loan_id[0];
+            $loan=explode('&',$loan[0]);
+            $loan_id=$loan[0];
+            $loan_name=$loan[1];
             $method='zh';
         }
         //获取贷款记录
@@ -208,7 +219,7 @@ class InvestController extends Controller
         $return_time=date('Y-m-d',$info[0]->loan_addtime+30*24*3600);
         //每期回款金额
         $return_money=round($info[0]->total*$money/($total_num*$total_money),2);
-        $sql_invest="insert into sun_invest (`id`,`user_id`,`invest_money`,`invest_time`,`loan_id`,`return_num`,`return_time`,`return_money`,`total_num`) values (null,$u_id,'$money','$time','$loan_id',0,'$return_time','$return_money','$total_num')";
+        $sql_invest="insert into sun_invest (`id`,`user_id`,`invest_money`,`invest_time`,`loan_id`,`loan_name`,`return_num`,`return_time`,`return_money`,`total_num`) values (null,$u_id,'$money','$time','$loan_id','$loan_name',0,'$return_time','$return_money','$total_num')";
         //插入投资表
         $re1 = DB::insert($sql_invest, [1, 'Dayle']);
         //修改集资金额
@@ -246,8 +257,9 @@ class InvestController extends Controller
             $money=$_POST['money'];
             $method=$_POST['method'];
             $loan_id=isset($_POST['loan_id'])?$_POST['loan_id']:'';
+            $loan_name=isset($_POST['loan_name'])?$_POST['loan_name']:'';
             if($loan_id){
-                $re=$this->doInvest($user_id,$time,$money,$loan_id);
+                $re=$this->doInvest($user_id,$time,$money,$loan_id.'&'.$loan_name);
             }else{
                 $re=$this->doSun($user_id,$time,$money,$method);
             }
@@ -263,6 +275,5 @@ class InvestController extends Controller
             $msg['msg']='投资这么慎重的事，请先登陆哦';
         }
         return json_encode($msg);
-
     }
 }

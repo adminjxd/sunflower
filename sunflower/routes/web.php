@@ -40,7 +40,7 @@ Route::get('login/loginout', 'Home\LoginController@loginout');
 Route::post('login/change_captcha', 'Home\LoginController@changeCaptcha');
 
 //我要投资
-Route::get('invest', ['uses'=>'Home\InvestController@index','as'=>'invest']);
+Route::get('invest/index', ['uses'=>'Home\InvestController@index','as'=>'invest/index']);
 //支付同步
 Route::get('invest/returns', ['uses'=>'Home\InvestController@returns','as'=>'invest/returns']);
 //支付异步
@@ -171,4 +171,5 @@ Route::get('acrowd/add_category', 'Admin\CrowdfundingController@addCategory');
 Route::get('acrowd/projects_list', 'Admin\CrowdfundingController@projectsList');
 Route::get('acrowd/projects_order', 'Admin\CrowdfundingController@projectsOrder');
 
-
+//后台投资资金模块
+Route::get('ainvest/capital_pool', 'Admin\InvestController@capitalPool');

@@ -25,7 +25,7 @@
                     <li><span class="c-888">借款编号：</span>20150921617</li>
                     <li><span class="c-888">发标日期：</span><?=date('Y-m-d',$info->loan_addtime)?></li>
                     <li><span class="c-888">保障方式：</span>100%本息垫付</li>
-                    <li><span class="c-888">还款方式：</span>按月付息,到期还本</li>
+                    <li><span class="c-888">还款方式：</span>等额本息</li>
                     <li><span class="c-888">需还本息：</span> <?=$info->total?>元 </li>
                     <li><span class="c-888">借款用途：</span>临时周转</li>
                     <li class="colspan"> <span class="c-888 fl">投标进度：</span>
@@ -37,15 +37,11 @@
                     <?php if($bar<100){?>
                     <li style="margin:3px 0 ;width:180px; height: 40px; line-height: 40px;" class="ui-btn btn-orange">
                         <div class="zf-div" style="display: none">
-                            <a href="javascript:void(0);" class="ui-btn btn-orange zh" loan_id="<?=$info->loan_id?>" >账户余额</a>
-                            <a href="{{asset('invest/zfb')}}?project=invest/<?=$info->loan_id?>" class="ui-btn btn-orange">支付宝</a>
+                            <a href="javascript:void(0);" class="ui-btn btn-orange zh" loan_id="<?=$info->loan_id?>" loan_name="<?=$info->user.$info->mortgage?>贷">账户余额</a>
+                            <a href="{{asset('invest/zfb')}}?project=invest/<?=$info->loan_id?>/<?=$info->user.$info->mortgage?>贷"style="margin-top:10px;:"  class="ui-btn btn-orange">支付宝</a>
                         </div>
-                        <a class="ui-btn btn-orange zf" style="font-size: 20px"  href="javascript:void(0);">投  资</a>
+                        <a class="ui-btn btn-orange zf" style="font-size: 20px;"  href="javascript:void(0);">投  资</a>
                     </li>
-
-                    <li> <span >投资范围：</span> <span id="account_range"> 50元~
-
-            不限 </span> </li>
                     <?php }?>
                 </ul>
             </div>

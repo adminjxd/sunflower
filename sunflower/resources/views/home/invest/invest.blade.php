@@ -1,7 +1,6 @@
 @extends('home.layouts.layout')
 
 @section('content')
-
     <!-- 页面内容 -->
     <!--列表-->
     <div class="page-filter wrap">
@@ -11,8 +10,9 @@
             <div class="filter-inner clearfix">
                 <div class="filter-item">
                     <div class="hd">
-                            <h3>Sun 存宝  </h3><span class="min-span">   <?=$msg?></span> <a  class="min-a" href="">了解详情></a>
+                        <h3>Sun 存宝  </h3><span class="min-span">   <?=$msg?></span> <a  class="min-a" href="">了解详情></a>
                     </div>
+                    <div id="container" style="margin-top:30px;width:800px;height:240px"></div>
                     <div>
 
                         <ul class="min">
@@ -32,7 +32,9 @@
                             </li>
                         </ul>
                     </div>
+
                 </div>
+
                 <div class="common-problem">
                     <h3>常见问题</h3>
                     <ul>
@@ -77,7 +79,7 @@
                                     <?php }else{?>
                                      <i class="icon icon-fang" title="房易贷"></i>
                                     <?php }?>
-                                </a><a class="f18" href="{{asset('invest/infor')}}?l=<?=$v->loan_id?>" title="<?=$v->user.$v->mortgage?>贷" target="_blank"><?=$v->user.$v->mortgage?>贷</a></li>
+                                </a><a class="f18" href="{{asset('invest/infor')}}?l=<?=$v->loan_id?>&lname=<?=$v->user.$v->mortgage?>贷" title="<?=$v->user.$v->mortgage?>贷" target="_blank"><?=$v->user.$v->mortgage?>贷</a></li>
                             <li class="col-180"><span class="f20 c-333"><?=$v->loan_amount?></span>元</li>
                             <li class="col-110 relative"><span class="f20 c-orange"><?=$v->gain_rate?>% </span></li>
                             <li class="col-150"> <span class="f20 c-333"><?=$v->loan_period?></span>个月 </li>
@@ -96,8 +98,8 @@
                                 <a class="ui-btn btn-gray" href="{{asset('invest/infor')}}?l=<?=$v->loan_id?>">还款中</a>
                                 <?php }else{?>
                                     <div class="zf-div" style="display: none">
-                                        <a href="javascript:void(0);" class="ui-btn btn-orange zh" loan_id="<?=$v->loan_id?>" >账户余额</a>
-                                        <a href="{{asset('invest/zfb')}}?project=invest/<?=$v->loan_id?>" class="ui-btn btn-orange">支付宝</a>
+                                        <a href="javascript:void(0);" class="ui-btn btn-orange zh" loan_id="<?=$v->loan_id?>" loan_name="<?=$v->user.$v->mortgage?>贷" >账户余额</a>
+                                        <a href="{{asset('invest/zfb')}}?project=invest/<?=$v->loan_id?>/<?=$v->user.$v->mortgage?>贷" class="ui-btn btn-orange">支付宝</a>
                                     </div>
                                     <a class="ui-btn btn-orange zf"  href="javascript:void(0);">立即投资</a>
                                     <?php }?>
@@ -124,15 +126,15 @@
             </div>
         </div>
     </div>
-
+<div id="rate7" style="display:none">
+    <?php foreach ($rate7 as $k=>$v) {?>
+    <span class="rate"><?=$v->rate?></span>
+    <span class="rate_date"><?=substr($v->rate_date,5,5)?></span>
+    <?php }?>
+</div>
 <!--网站底部-->
-    <script>
-
-       $(function () {
-
-       })
-
-    </script>
+    <script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="{{asset('/js/investt.js')}}"></script>
 @endsection
 
 
