@@ -126,6 +126,7 @@ var _hmt = _hmt || [];
     </div>
    </div>
   </div>
+   <input type="hidden" id="h_url" value="{{ URL::asset('') }}">
   <script type="text/javascript" src="{{ URL::asset('loan/js/jquery-1.12.2.min.js')}}?v=58abdfe47fa65"></script>
   <script type="text/javascript" src="{{ URL::asset('loan/js/calculator.js')}}?v=58abdfe47fa65"></script>
   <script type="text/javascript" src="{{ URL::asset('loan/js/calculation.js')}}?v=58abdfe47fa65"></script>

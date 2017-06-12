@@ -1,4 +1,5 @@
-var loacal = 'http://www.sf.com/sunflower/public/';
+// var loacal = 'http://www.sf.com/sunflower/public/';
+var loacal = $('#h_url').val();
 var update = 'aloan/updateRate';
 var loanInfo = 'aloan/loanInfo';
 var success = 'aloan/success';

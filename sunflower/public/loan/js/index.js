@@ -1,5 +1,5 @@
 ;
-var _baseServer = 'http://localhost/ghm/sunflower/public',
+var _baseServer = $('#h_url').val(),
 _www = 'https://www.yirendai.com/LandingPage/mhd/success/index.html',
 cookieUrl = '.yirendai.com',
 path = '/',
