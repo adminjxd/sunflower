@@ -16,6 +16,7 @@
 <!-- <link href="{{ URL::asset('/css/user.css') }}" rel="stylesheet" type="text/css"> -->
 <!-- <link href="{{ URL::asset('/css/help.css') }}" rel="stylesheet" /> -->
 <link href="{{ URL::asset('/css/users.css') }}" rel="stylesheet" type="text/css"  />
+<link href="{{ URL::asset('/css/cf.css') }}" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('/css/jquery.datetimepicker.css') }}"/>
 <script type="text/javascript" src="{{ URL::asset('/js/jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('/js/common.js') }}"></script>
