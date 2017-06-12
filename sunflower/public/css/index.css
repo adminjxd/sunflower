@@ -196,7 +196,7 @@
 .ui-btn,a.ui-btn{cursor:pointer;border:none;transition:background-color 0.2s ease-out;text-decoration:none;text-align:center;font-family:Microsoft YaHei,Simsun,Arial,Helvetica,sans-serif;color:#FFF;display:block;}
 .ui-btn.disabled,.ui-btn.disabled:hover{cursor:default !important;background:#999 !important;}
 .btn-gray { background: #859ab4;}
-.ui-btn,a.ui-btn{cursor:pointer;border:none;transition:background-color 0.2s ease-out;text-decoration:none;text-align:center;font-family:Microsoft YaHei,Simsun,Arial,Helvetica,sans-serif;color:#FFF;display:block;}
+.ui-btn,a.ui-btn{width:120px;height:30px;margin-top:10px;cursor:pointer;border:none;transition:background-color 0.2s ease-out;text-decoration:none;text-align:center;font-family:Microsoft YaHei,Simsun,Arial,Helvetica,sans-serif;font-size:20px;font-weight:bold;color:#FFF;display:block;}
 .btn-green{background:#7aa822;color:#FFF !important;}
 .btn-green:hover{background:#8bc026;}
 .btn-orange{background:#ff7417;color:#FFF !important;}

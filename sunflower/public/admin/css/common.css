@@ -18,7 +18,7 @@ ul,ol{list-style-type:none} .con_box{width:1020px;margin:0 auto}
 .br_icon{-moz-border-radius:50%;-webkit-border-radius:50%;border-radius:50%}
 .w_f{width:100%}.c_qhui{color:#434343}.pb40{padding:40px 0}.pd40{padding-bottom:40px}
 b,h1,h2,h3,h4,h5{font-size:100%;font-weight:normal}
-.clearfix:after,.container:after{content:" ";display:block;clear:both;visibility:hidden;overflow:hidden}
+.clearfix:after,.container:after{content:" ";display:block;height:40px;clear:both;visibility:hidden;overflow:hidden}
 .min_width{ min-width:1020px;}
 .clear{ clear:both; padding:0px; margin:0px;}
 .fn-left {float: left;} .fn-left, .fn-right {display: inline;} .fn-right {float:right;}
@@ -46,11 +46,11 @@ b,h1,h2,h3,h4,h5{font-size:100%;font-weight:normal}
 .header-top .s-time{margin:0 20px 0 15px}
 .header-top-ul li{border-right:1px solid #ddd;float:left; font-size:14px;}
 .header-top-ul li:first-child{border-left:1px solid #ddd}
-.header-top-ul li .c-orange{color:#09f}
-.header-top-ul li a{width:88px;height:50px;text-align:center;line-height:50px;color:#777676;display:block;text-decoration:none}
-.header-top-ul li a:hover{background-color:#2fa8d7;color:#fff}
+.header-top-ul li .c-orange{color:#09f;margin-top: -8px;}
+.header-top-ul li a{width:88px;height:51px;text-align:center;line-height:50px;color:#777676;display:block;text-decoration:none;margin-top: -8px;}
+.header-top-ul li a:hover{background-color:#2fa8d7;color:#fff;}
 .header-top-ul li a:hover .c-orange{color:#fff}
-.header-top-ul li .app{width:110px}
+.header-top-ul li .app{width:110px;margin-top: -8px;}
 .header-top-ul li .app0{color:#f60}
 .header-top-ul li .my-account{width:auto;padding:0 22px}
 .top-ico{border:1px solid #ddd;width:24px;height:24px;border-radius:50%;margin:12px 10px 0 0}
@@ -75,8 +75,8 @@ b,h1,h2,h3,h4,h5{font-size:100%;font-weight:normal}
 .flex-control-nav .flex-active{ background-position:0 0;}
 .flex-direction-nav{ position:absolute; z-index:3; width:100%; top:45%;}
 .flex-direction-nav li a{ display:block; width:50px; height:50px; overflow:hidden; cursor:pointer; position:absolute; opacity:0.4;}
-/*.flex-direction-nav li a.flex-prev{left:40px;background:url(../images/prev.png) center center no-repeat;}*/
-/*.flex-direction-nav li a.flex-next{right:40px;background:url(../images/next.png) center center no-repeat;}*/
+.flex-direction-nav li a.flex-prev{left:40px;background:url(../images/prev.png) center center no-repeat;}
+.flex-direction-nav li a.flex-next{right:40px;background:url(../images/next.png) center center no-repeat;}
 
 
 .login_float{ width:1150px; margin:0 auto; position:relative; z-index:20; top:-700px;}
@@ -140,11 +140,11 @@ b,h1,h2,h3,h4,h5{font-size:100%;font-weight:normal}
 .ft-helper a{ display:block;font-size:14px; color:#fff;}
 .ft a:hover{ text-decoration:underline;}
 
-.ft-service{ float:left; padding:33px 50px 21px 50px; border-right:1px solid #72777b; height:124px; }
+.ft-service{ float:left; padding:33px 50px 21px 50px; border-right:1px solid #72777b; height:160px; }
 .ft-service .icon-ft-tishi{ margin-right:5px;}
 .ft-service dl{ width:250px;}
 .ft-service dt{ height:19px; line-height:19px;}
-.ft-service p{ line-height:22px; margin-top:7px;font-size: 14px; color:#fff;}
+.ft-service p{ line-height:22px; margin-top:-10px;font-size: 14px; color:#fff;}
 .ft-service p strong{ font-weight:bold; font-family:'Arial'; font-size:20px;}
 .ft-service p em{font-weight: bold;}
 .ft-serv-handle{ margin-top:8px;}

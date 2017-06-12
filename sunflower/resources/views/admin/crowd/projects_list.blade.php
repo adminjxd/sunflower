@@ -14,7 +14,7 @@
     <link href="{{ URL::asset('admin/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('admin/css/animate.css') }}" rel="stylesheet">
 	<link href="{{ URL::asset('admin/css/style.css?v=4.1.0') }}" rel="stylesheet">
-   
+    <link href="{{ URL::asset('admin/css/common.css') }}" rel="stylesheet" />
 </head>
 
 <body class="gray-bg">
@@ -26,14 +26,34 @@
                     <h5>项目列表</h5>
                     </div>
                     <div class="ibox-content">
-                        <button type="button" class="btn btn-info btn-sm">自定义</button>
-                        <br><br>
-                        <table class="table table-bordered">
-                        	<tr>
-                        		<td>123</td>
-                        		<td>456</td>
-                        	</tr>
-                        </table>
+                    <ul>
+                    <table>
+                    <tr>
+                        <th width="20%">项目封面</th>
+                        <th width="15%">项目标题</th>
+                        <th width="20%">项目目的</th>
+                        <th width="10%">所需金额</th>
+                        <th width="10%">众筹周期</th>
+                        <th width="15%">回报类型</th>
+                        <th>审核</th>
+                    </tr>
+                    <tr>
+                    @foreach ($data as $val)   
+                        <td><img src="{{URL::asset( $val->cf_cover )}}" width="150px;"></td>
+                        <td>{{ $val->cf_title }}</td>
+                        <td>{{ $val->cf_description}}</td>
+                        <td><span>{{ $val->cf_financing_amount }}</span>元</td>
+                        <td><span>{{ $val->cf_period }}</span>天</td>
+                        <td>{{ $val->cf_reward_type }}</td>
+                        <td><a href="javascript:void(0);"><img src="{{URL::asset('admin/img/x.png')}}" width="20px;" id="checks"></a></td>
+                        <td><input type="hidden" value="0" id="val"></td>
+                    @endforeach
+                    </tr>
+                    </table>
+                                  
+                        
+                       
+                      </ul>
                     </div>
                 </div>
             </div>
@@ -54,3 +74,4 @@
 </body>
 
 </html>
+

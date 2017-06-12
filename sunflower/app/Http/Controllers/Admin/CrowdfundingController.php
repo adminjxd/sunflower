@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\Cfprocategory;
+use App\Models\Cfproduct;
+use Illuminate\Http\Request;
 class CrowdfundingController extends Controller
 {
 	/**
@@ -36,8 +38,11 @@ class CrowdfundingController extends Controller
      */
     public function projectsList()
     {
-        return view('admin/crowd/projects_list');
+        $product=new Cfproduct();
+        $data=$product->getAll();
+        return view('admin/crowd/projects_list',['data'=>$data]);
     }
+    
 
     /**
      * 积分商品兑换订单

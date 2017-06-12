@@ -145,9 +145,26 @@ Route::get('aboutus/legalnotice', ['uses'=>'Home\AboutUsController@legalnotice',
 Route::get('aboutus/descriptioncharges', ['uses'=>'Home\AboutUsController@descriptioncharges','as'=>'aboutus/descriptioncharges']);
 //招贤纳士
 Route::get('aboutus/recruitment', ['uses'=>'Home\AboutUsController@recruitment','as'=>'aboutus/recruitment']);
-//众筹
+//众筹列表
 Route::get('crowdfunding/cflist', ['uses'=>'Home\CrowdfundingController@cflist','as'=>'crowdfunding/cflist']);
-
+//发起众筹
+Route::get('crowdfunding/cfstart', ['uses'=>'Home\CrowdfundingController@cfstart','as'=>'crowdfunding/cfstart']);
+//个人发起众筹
+Route::get('crowdfunding/cfperson', ['uses'=>'Home\CrowdfundingController@cfperson','as'=>'crowdfunding/cfperson']);
+//发起众筹项目
+Route::get('crowdfunding/cfproduct', ['uses'=>'Home\CrowdfundingController@cfproduct','as'=>'crowdfunding/cfproduct']);
+//处理发起众筹项目数据
+Route::any('crowdfunding/cfdoproduct', ['uses'=>'Home\CrowdfundingController@cfdoproduct','as'=>'crowdfunding/cfdoproduct']);
+//处理个人发起众筹数据
+Route::any('crowdfunding/docfperson', ['uses'=>'Home\CrowdfundingController@docfperson','as'=>'crowdfunding/docfperson']);
+//机构发起众筹数据
+Route::get('crowdfunding/cfgroup', ['uses'=>'Home\CrowdfundingController@cfgroup','as'=>'crowdfunding/cfgroup']);
+//处理机构发起众筹数据
+Route::any('crowdfunding/docfgroup', ['uses'=>'Home\CrowdfundingController@docfgroup','as'=>'crowdfunding/docfgroup']);
+//重抽详情页
+Route::get('crowdfunding/cfdesc', ['uses'=>'Home\CrowdfundingController@cfdesclist','as'=>'crowdfunding/cfdesc']);
+//错误页面
+Route::get('crowdfunding/cferror', ['uses'=>'Home\CrowdfundingController@cferror','as'=>'crowdfunding/cferror']);
 
 //借贷首页
 Route::get('loan/index', ['uses'=>'Home\LoanController@index','as'=>'loan/index']);
