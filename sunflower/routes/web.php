@@ -103,7 +103,6 @@ Route::get('ucenter/redpacket', ['uses'=>'Home\UcenterController@redpacket','as'
 Route::post('redpacket/exchange', 'Home\UcenterController@redpacket_exchange');
 //前台，幸运大转盘
 Route::get('ucenter/lucky', 'Home\UcenterController@lucky');
-Route::any('redpacket/session', 'Home\UcenterController@session');
 //前台，用户抽奖行为
 Route::post('redpacket/lucky_do', 'Home\UcenterController@lucky_do');
 //兑换历史

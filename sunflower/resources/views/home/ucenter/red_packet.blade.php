@@ -20,7 +20,6 @@
           <li style="position:relative;" class=""> <span> <a href="{{ URL::asset('/ucenter/lucky ') }}"> <i class="dot dot06"></i> 幸运转盘 </a> </span> </li>
           <li style="position:relative;"> <span> <a href="{{ URL::asset('/ucenter/systeminfo') }}"><i class="dot dot08"></i>系统信息 </a> </span> </li>
         <li><span><a href="{{ URL::asset('/ucenter/accountset') }}"><i class="dot dot09"></i>账户设置</a></span></li>
-        <li><span><a href="{{ URL::asset('/redpacket/session') }}"><i class="dot dot09"></i>设置session</a></span></li>
       </ul>
     </div>
     <label id="typeValue" style="display:none;"> </label>

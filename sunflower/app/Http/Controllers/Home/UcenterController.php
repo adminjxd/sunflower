@@ -613,13 +613,8 @@ class UcenterController extends Controller
             }
             return $str;//返回抽中奖品
         }
-}
+	}
 
-
-    public function session(){
-        $arr = ['id'=>1,'username'=>'zhangsan'];
-        session(['user_info'=>$arr]);
-    }
 	/**
 	 * @action: Change history	兑换历史
 	 * 
