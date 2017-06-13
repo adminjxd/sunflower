@@ -82,9 +82,9 @@ class InvestController extends Controller
      * 获取用户信息*/
     protected function getUser($user_id=''){
         if($user_id){
-            $info=DB::table('user_profile') ->select(DB::raw('user_id,creditpoint,real_name,sex,balance'))->where('user_id','=',$user_id)->get()->toarray();
+            $info=DB::table('user_profile') ->select(DB::raw('user_id,creditpoint,real_name,sex,balance'))->where('user_id','=',$user_id)->limit(15)->get()->toarray();
         }else{
-            $info=DB::table('user_profile') ->select(DB::raw('user_id,creditpoint,real_name,sex,balance'))->get()->toarray();
+            $info=DB::table('user_profile') ->select(DB::raw('user_id,creditpoint,real_name,sex,balance'))->limit(15)->get()->toarray();
         }
         return $info;
     }
