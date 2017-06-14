@@ -99,6 +99,8 @@ class RegisterController extends Controller
 	        	'id' => $user_id,
 	        	'username' => $username,
 	        	'password' => md5($password),
+	        	'phone'=>$phone,
+	        	'pwdlevel'=>$pwdlevel
 	        ];
 	        session(['userinfo' => $user_info]);
 	        session()->forget("$phone");

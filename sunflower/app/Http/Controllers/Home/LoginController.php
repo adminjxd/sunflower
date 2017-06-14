@@ -43,11 +43,15 @@ class LoginController extends Controller
             $ret['msg'] = '验证码错误';
         } else {
 	        //验证帐号密码的正确性 
-	        $res = User::where('username', '=', $username )->orWhere('phone', '=', $username )->orWhere('email', '=', $username )->where('password', '=', md5($pwd))->first();
+            $res = User::where('username', '=', "$username")->orWhere('phone', '=', "$username")->first();
 	        if (!$res) {
 	        	$ret['msg'] = '用户名密码错误，请重新登陆';
 	        } else {
                 $user_info = $res->toArray();
+                if ($user_info['password']!=md5($pwd)) {
+                    $ret['msg'] = '用户名密码错误，请重新登陆';
+                    return json_encode($ret);
+                }
                 $profile_data = [
                     'last_logintime' => date('Y-m-d H:i:s'),
                     'last_ip' => Oauth_user::getIp(),
@@ -228,6 +232,8 @@ class LoginController extends Controller
                     'id' => $user_id,
                     'username' => $username,
                     'password' => md5($password),
+                    'phone' => $phone,
+                    'pwdlevel'=>$pwdlevel,
                 ];
                 session(['userinfo' => $user_info]);
                 session()->forget("$phone");
@@ -239,12 +245,16 @@ class LoginController extends Controller
                 return json_encode($ret);
             } else {
                 //验证帐号密码的正确性 
-                $res = User::where('username', '=', $username )->orWhere('phone', '=', $username )->orWhere('email', '=', $username )->where('password', '=', md5($pwd))->first();
+                $res = User::where('username', '=', $username )->orWhere('phone', '=', $username )->first();
                 if (!$res) {
                     $ret['msg'] = '用户名密码错误';
                     return json_encode($ret);
                 } else {
                     $user_info = $res->toArray();
+                    if ($user_info['password']!=md5($password)) {
+                        $ret['msg'] = '用户名密码错误';
+                        return json_encode($ret);
+                    }
                     $user_id = $user_info['id'];
                     //检测该帐号是否绑定过
                     $oauth_info = Oauth_user::where('user_id', '=', $user_id )->first();
@@ -273,7 +283,7 @@ class LoginController extends Controller
             'datetime' => date('Y-m-d H:i:s',time()),
         ];
         Oauth_user::insert($data);
-        //存储session
+        //存储session\
         $ret['retCode'] = 1;
         $ret['msg'] = '绑定成功';
 
