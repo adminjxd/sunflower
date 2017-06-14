@@ -71,7 +71,7 @@
     <div class="registerCont" id='bind_p3' style="display:none;">
       <ul>
         <li>
-          <span class="dis">用户名：</span><input class="input" type="text" name="b_username" id="b_username" maxlength="15" tabindex="1" autocomplete="off" placeholder="用户名/手机号/邮箱">
+          <span class="dis">用户名：</span><input class="input" type="text" name="b_username" id="b_username" maxlength="15" tabindex="1" autocomplete="off" placeholder="用户名/手机号">
           <span id="b_username_sign"></span>
         </li>
                   
