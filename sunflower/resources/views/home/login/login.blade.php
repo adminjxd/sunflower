@@ -10,7 +10,7 @@
 		<div class="registerCont">
 			<ul>
 				<li>
-					<span class="dis">用户名：</span><input class="input" type="text" name="username" id="username" maxlength="24" tabindex="1" autocomplete="off" placeholder="用户名/手机号/邮箱">
+					<span class="dis">用户名：</span><input class="input" type="text" name="username" id="username" maxlength="24" tabindex="1" autocomplete="off" placeholder="用户名/手机号">
 					<span id="username_sign"></span>
 				</li>
 	                
@@ -28,7 +28,9 @@
 				</li>
                 <li>
                     <span class="dis"></span>
-                    <a href="https://api.weibo.com/oauth2/authorize?client_id=3465828263&redirect_uri=http://www.dev.com/login/oauth_login"><img src="{{ URL::asset('/images/sina.gif') }}" alt=""></a>
+                    @foreach ($oauthinfo as $k =>$v)
+                    <a href="{{$v['a_url']}}"><img src="{{ URL::asset($v['logo']) }}" alt=""></a>&nbsp;&nbsp;
+                    @endforeach
                 </li>
 				<li class="btn">
 					<input type="button" class="radius1" value="立即登录" id="submitBtn">

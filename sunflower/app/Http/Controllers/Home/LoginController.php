@@ -7,6 +7,7 @@ use Gregwar\Captcha\CaptchaBuilder;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Oauth_user;
+use App\Models\Oauth;
 use App\Models\Profile;
 // use Request;
 
@@ -19,10 +20,13 @@ class LoginController extends Controller
     {
         $builder = new CaptchaBuilder;
         $builder->build();
-        $captcha = $builder->inline();  //获取图形验证码的url
+        $captcha = $builder->inline();
         //将图形验证码的值写入到session中
         session(['piccode' => $builder->getPhrase()]);
-        return view('home/login/login', ['captcha'=>$captcha]);
+        //查询第三方信息
+        $oauthinfo = Oauth::where('is_close', '=', "0")->get()->toArray();
+
+        return view('home/login/login', ['captcha'=>$captcha,'oauthinfo'=>$oauthinfo]);
     }
 
     /**
