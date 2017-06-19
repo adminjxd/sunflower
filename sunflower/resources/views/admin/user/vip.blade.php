@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title> - 会员中心</title>
+    <title> - 实名认证</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
@@ -23,17 +23,29 @@
             <div class="col-sm-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                    <h5>会员中心</h5>
+                    <h5>实名认证</h5>
                     </div>
                     <div class="ibox-content">
                         <button type="button" class="btn btn-info btn-sm">自定义</button>
                         <br><br>
                         <table class="table table-bordered">
                         	<tr>
-                        		<td>123</td>
-                        		<td>456</td>
+                        		<td>序号</td>
+                                <td>姓名</td>
+                                <td>身份证号</td>
+                        		<td>操作</td>
                         	</tr>
+                            @foreach($auth_info as $k=>$v)
+                            <tr>
+                                <td>{{$k+1}}</td>
+                                <td>{{$v['username']}}</td>
+                                <td>{{$v['idnumber']}}</td>
+                                <td><a href="">通过</a> || <a href="">失败</a></td>
+                            </tr>
+                            @endforeach
                         </table>
+                        <center>
+                        {!! $auth_info->links() !!}</center>
                     </div>
                 </div>
             </div>
