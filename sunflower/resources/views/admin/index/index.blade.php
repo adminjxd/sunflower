@@ -67,7 +67,7 @@
                                 <a class="J_menuItem" href="{{ URL::asset('auser/reputation') }}">信誉评估</a>
                             </li>
                             <li>
-                                <a class="J_menuItem" href="{{ URL::asset('auser/vip') }}">会员中心</a>
+                                <a class="J_menuItem" href="{{ URL::asset('auser/vip') }}">实名认证</a>
                             </li>
                         </ul>
                     </li>

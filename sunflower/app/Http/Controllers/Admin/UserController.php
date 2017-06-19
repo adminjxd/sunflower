@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Authentication;
 
 class UserController extends Controller
 {
@@ -18,14 +19,19 @@ class UserController extends Controller
     }
 
     /**
-     * 后台首页主体页面
+     * 实名认证
      *
      * @param
      * @return
      */
     public function vip()
     {
-        return view('admin/user/vip');
+        // $auth_info = Authentication::where('status', '=', "0")->limit(10)->get()->toArray();
+        $auth_info = Authentication::where('status', '=', "0")->paginate(20);
+        // echo '<pre>';
+        // print_r($auth_info);
+        // die;
+        return view('admin/user/vip',['auth_info'=>$auth_info]);
     }
 
     /**

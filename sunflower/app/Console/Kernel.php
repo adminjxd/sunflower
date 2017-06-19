@@ -14,6 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         'App\Console\Commands\SendEmails',
+        'App\Console\Commands\Auther',
+        'App\Console\Commands\Oauth',
     ];
 
     /**
